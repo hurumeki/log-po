@@ -33,10 +33,19 @@ Indexes: missionId, achievedAt
 |-------|------|-------------|
 | id | number | Auto-increment |
 | missionId | number | Source mission ID |
-| title | string | Mission name at time of achievement (snapshot) |
-| points | number | Points at time of achievement (snapshot) |
-| hierarchy | string | Hierarchy breadcrumb (e.g., `"Exercise › Workout › 10 Push-ups"`) |
+| snapshot | object | Snapshot of mission data at time of achievement (see below) |
 | achievedAt | string | Achievement datetime |
+
+**snapshot object:**
+
+| Field | Type | Description |
+|-------|------|-------------|
+| title | string | Mission name at time of achievement |
+| points | number | Points at time of achievement |
+| hierarchy | string[] | Hierarchy breadcrumb as array (e.g., `["Exercise", "Workout", "10 Push-ups"]`). Displayed joined with ` › ` |
+| interval | string | Mission interval at time of achievement (`'daily'` / `'weekly'` / `'monthly'`) |
+
+> **Note:** History entries are preserved even when the source mission is deleted. This ensures calendar records remain intact.
 
 ## 5.3 Rewards Store
 
@@ -62,3 +71,5 @@ Key: key (string key)
 |-----|-----------|-------------|
 | `totalPoints` | number | Cumulative points (never consumed) |
 | `lastResetCheck` | string | Last reset check datetime |
+| `notificationEnabled` | boolean | Whether daily reminder notification is enabled (default: `false`) |
+| `notificationTime` | string | Notification time in `HH:MM` format (default: `'21:00'`) |
