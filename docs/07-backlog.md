@@ -1,39 +1,39 @@
-# 8. 未実装機能一覧
+# 8. Unimplemented Features
 
-仕様書に記載されているが、現時点で未実装の機能。
+Features described in the spec but not yet implemented.
 
-| 機能 | 優先度 | 備考 |
-|------|--------|------|
-| ローカル通知（リマインド） | 高 | Service Worker + Notification API。通知時間の設定UI含む |
-| スマートキャンセル | 高 | 全デイリー完了時に残りの通知を自動キャンセル |
-| 通知の一括予約 | 中 | アプリ起動時に数日分を予約（Notification Triggers API） |
-| ミッションヘッダーのプログレスバー | 低 | 次の報酬までの視覚的バー表示 |
-| 効果音（SE） | 低 | タスク完了時の「ポチャリン！」音 |
-| ファンファーレ音 | 低 | ご褒美解禁時の効果音 |
-| カレンダーの日別合計ポイント表示 | 低 | スタンプに加えてポイント数を表示 |
-| 週次の基準曜日変更時の別ミッション扱い | 低 | 履歴の不整合防止のため |
-
----
-
-# 9. 既知のUI課題
-
-## 9.1 デスクトップ表示
-- `max-w-md` (448px) 制限のため、大画面では左右に大きな余白ができる
-
-## 9.2 フォント
-- Google Fonts（Noto Sans JP）を外部CDNから読み込んでいるため、オフライン時にフォールバックフォントに切り替わる
-- PWA としてはフォントのセルフホスティングが望ましい
-
-## 9.3 設定画面
-- 通知設定セクションが未実装のため、画面が簡素
+| Feature | Priority | Notes |
+|---------|----------|-------|
+| Local notifications (reminders) | High | Service Worker + Notification API. Includes notification time setting UI |
+| Smart cancel | High | Auto-cancel remaining notifications when all dailies are completed |
+| Batch notification scheduling | Medium | Schedule several days' worth of notifications at app startup (Notification Triggers API) |
+| Mission header progress bar | Low | Visual bar showing progress to next reward |
+| Sound effects (SE) | Low | "Pocharin!" sound on task completion |
+| Fanfare sound | Low | Sound effect on reward unlock |
+| Calendar daily point totals | Low | Display point totals alongside stamps |
+| Weekly reference day change as separate mission | Low | To prevent history inconsistency |
 
 ---
 
-# 10. 更新履歴
+# 9. Known UI Issues
 
-| 日付 | バージョン | 内容 |
-|------|-----------|------|
-| 2026-03-22 | v1.0.3 | モーダルz-index修正、タッチターゲット拡大、完了バッジグレーアウト、削除確認ダイアログ追加 |
-| 2026-03-22 | v1.0.2 | Safe Area対応（ヘッダー/BottomNav）、max-width統一、BottomNavタップフィードバック追加 |
-| 2026-03-22 | v1.0.1 | UIレビュー指摘の反映: FABボタンのデスクトップ配置修正、設定画面ボタンのスタイル改善 |
-| 2026-03-22 | v1.0.0 | 初版作成。仕様書と現実装の統合ドキュメント |
+## 9.1 Desktop Display
+- Due to `max-w-md` (448px) constraint, large screens have significant left/right margins
+
+## 9.2 Fonts
+- Noto Sans JP is loaded from Google Fonts CDN, so it falls back to system fonts when offline
+- Self-hosting fonts would be preferable for a PWA
+
+## 9.3 Settings Screen
+- Notification settings section is unimplemented, making the screen minimal
+
+---
+
+# 10. Changelog
+
+| Date | Version | Changes |
+|------|---------|---------|
+| 2026-03-22 | v1.0.3 | Fixed modal z-index, enlarged touch targets, greyed-out completed badges, added delete confirmation dialog |
+| 2026-03-22 | v1.0.2 | Safe Area support (header/BottomNav), unified max-width, added BottomNav tap feedback |
+| 2026-03-22 | v1.0.1 | UI review fixes: FAB button desktop placement, Settings screen button style improvements |
+| 2026-03-22 | v1.0.0 | Initial version. Integrated spec and implementation documentation |

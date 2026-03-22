@@ -1,39 +1,39 @@
-# 6. 主要な処理フロー
+# 6. Core Processing Flows
 
-## 6.1 ミッション達成フロー
-
-```
-ユーザーがタスクをタップ
-  → completedAt を現在日時に更新
-  → History にスナップショットを追加
-  → totalPoints にポイントを加算
-  → 未解禁の Reward の中で requiredPoints <= totalPoints のものを検索
-  → 該当あり → unlockedAt を設定 → 紙吹雪演出 + 祝福モーダル表示
-  → UI に +X pt!! ポップアップ表示
-```
-
-## 6.2 リセットチェックフロー
+## 6.1 Mission Completion Flow
 
 ```
-アプリ起動時 (App mount)
-  → runResetCheck() 実行
-  → 全ミッションを取得
-  → 各ミッションの completedAt と interval を比較
-    → daily: completedAt の日 < 今日 → リセット
-    → weekly: completedAt の週起算日 < 今週起算日 → リセット
-    → monthly: completedAt の月 < 今月 → リセット
-  → 該当ミッションの completedAt を null にクリア
+User taps a task
+  → Update completedAt to current datetime
+  → Add snapshot to History
+  → Add points to totalPoints
+  → Search unlocked Rewards where requiredPoints <= totalPoints
+  → If found → set unlockedAt → confetti animation + celebration modal
+  → Display +X pt!! popup in UI
 ```
 
-## 6.3 データバックアップ/復元フロー
+## 6.2 Reset Check Flow
 
 ```
-エクスポート:
-  全ストアのデータを JSON オブジェクトにまとめ
-  → Blob → ダウンロード (logpo-backup-YYYY-MM-DD.json)
+On app startup (App mount)
+  → Execute runResetCheck()
+  → Fetch all missions
+  → Compare each mission's completedAt with interval
+    → daily: completedAt date < today → reset
+    → weekly: completedAt week start < this week start → reset
+    → monthly: completedAt month < this month → reset
+  → Clear completedAt to null for matching missions
+```
 
-インポート:
-  ファイル選択 → JSON パース
-  → 全ストアをクリア → データ挿入
-  → ページリロードで反映
+## 6.3 Data Backup/Restore Flow
+
+```
+Export:
+  Compile all store data into a JSON object
+  → Blob → download (logpo-backup-YYYY-MM-DD.json)
+
+Import:
+  File selection → JSON parse
+  → Clear all stores → insert data
+  → Page reload to apply
 ```

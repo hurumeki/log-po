@@ -1,26 +1,31 @@
-# 動作環境
+# Environment
 
-- **Claude Code on the web** 上で動作している
-- 原則、すべての作業はクラウド上で完結させること
-- ローカル環境（ユーザーのPC）への操作や案内は不要
+- Running on **Claude Code on the web**
+- All work must be completed in the cloud
+- No local environment (user's PC) operations or guidance needed
 
-# 仕様書
+# Language Rules
 
-- 仕様書は `docs/` フォルダに分割して格納されている
-- **機能の実装・修正を行う前に、まず `docs/INDEX.md`（目次）を読み、関連するファイルのみを参照すること**
-  - 全ファイルを一括で読み込まないこと（コンテキスト節約のため）
-- 仕様書に記載された仕様に従って実装すること
-- **実装に伴い仕様が変更・追加された場合は、該当する仕様書も同時に更新すること**
-  - 仕様書の更新を別コミットにせず、実装変更と同じコミットに含めること
+- **Specifications (`docs/`), code comments, and commit messages must be written in English**
+- UI-facing strings (user-visible text in the app) remain in Japanese
 
-# UIレビュー
+# Specifications
 
-- 実行コマンド: `npm run test:ui`
-- スクリーンショットは `e2e/screenshots/` に保存される
-- 詳細な手順・観点は `e2e/UI_REVIEW_PROMPT.md` を参照
+- Specs are stored in the `docs/` folder, split into multiple files
+- **Before implementing or modifying features, read `docs/INDEX.md` (index) first and refer only to the relevant files**
+  - Do not load all files at once (to save context)
+- Implement according to the specs
+- **If specs change or are added due to implementation, update the relevant spec files at the same time**
+  - Include spec updates in the same commit as the implementation changes
 
-# Playwright 利用ルール
+# UI Review
 
-- **バージョン確認・再インストールは行わないこと**（SessionStart フックで自動実行される）
-- 実行は **必ず `npx playwright test`** を使うこと（グローバル実行は禁止）
-- ブラウザは **Chromium のみ** 使用する
+- Command: `npm run test:ui`
+- Screenshots are saved to `e2e/screenshots/`
+- See `e2e/UI_REVIEW_PROMPT.md` for detailed steps and review criteria
+
+# Playwright Rules
+
+- **Do not check versions or reinstall** (automatically handled by SessionStart hook)
+- Always use **`npx playwright test`** (global execution is prohibited)
+- Use **Chromium only**

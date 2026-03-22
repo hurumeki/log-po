@@ -1,34 +1,34 @@
-# 1. プロジェクト概要
+# 1. Project Overview
 
-| 項目 | 内容 |
-|------|------|
-| サービス名 | ログポ (Log-Po) |
-| 名前の由来 | Log（記録） + Point（ポイント） |
-| コンセプト | 「失敗を記録せず、成功（ポイント）だけを積み上げる」ポジティブなタスク管理アプリ |
-| プラットフォーム | PWA（主なターゲット: Android Chrome） |
-| ホスティング | Netlify（静的ファイル配信） |
-| 認証 | なし（サーバーレス、ログイン不要） |
+| Item | Details |
+|------|---------|
+| Service Name | Log-Po |
+| Name Origin | Log (record) + Point |
+| Concept | A positive task management app that "records only successes (points), never failures" |
+| Platform | PWA (primary target: Android Chrome) |
+| Hosting | Netlify (static file delivery) |
+| Authentication | None (serverless, no login required) |
 
-### コンセプトの3本柱
-1. **「できなかったこと」によるストレスを排除** — 失敗や未完了は記録しない
-2. **ゲームのクエスト感覚** — デイリーミッションをこなすように日常タスクを楽しむ
-3. **ご褒美の解禁** — ポイントを貯めて自分への報酬をアンロックする
+### Three Core Pillars
+1. **Eliminate stress from "things not done"** — failures and incomplete tasks are never recorded
+2. **Quest-like game feel** — enjoy daily tasks as if completing game quests
+3. **Reward unlocking** — accumulate points to unlock self-rewards
 
 ---
 
-# 2. 技術スタック
+# 2. Tech Stack
 
-| レイヤー | 技術 | バージョン |
-|----------|------|-----------|
-| フレームワーク | React | v19 |
-| ビルドツール | Vite | v8 |
-| スタイリング | Tailwind CSS | v4 |
-| データベース | Dexie.js (IndexedDB) | v4 |
-| 演出 | canvas-confetti | — |
+| Layer | Technology | Version |
+|-------|-----------|---------|
+| Framework | React | v19 |
+| Build Tool | Vite | v8 |
+| Styling | Tailwind CSS | v4 |
+| Database | Dexie.js (IndexedDB) | v4 |
+| Effects | canvas-confetti | — |
 | PWA | vite-plugin-pwa | — |
-| デプロイ | Netlify | — |
+| Deploy | Netlify | — |
 
-### ビルド設定（vite.config.js）
-- ベースパス: `/log-po/`（`VITE_BASE_PATH` 環境変数で変更可能）
-- PWA: Standalone モード、テーマカラー `#1E293B`
-- アイコン: 192x192 / 512x512 PNG
+### Build Configuration (vite.config.js)
+- Base path: `/log-po/` (configurable via `VITE_BASE_PATH` environment variable)
+- PWA: Standalone mode, theme color `#1E293B`
+- Icons: 192x192 / 512x512 PNG

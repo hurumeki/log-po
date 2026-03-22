@@ -1,20 +1,20 @@
-# 3. デザイン・ブランディング
+# 3. Design & Branding
 
-### 設計仕様
+### Design Specification
 
-| 項目 | 仕様値 | 備考 |
-|------|--------|------|
-| メインカラー | `#1E293B` (ログ・ネイビー) | 信頼感と記録のイメージ |
-| アクセントカラー | `#FACC15` (ポ・イエロー) | 輝くポイントとワクワク感 |
-| フォント | Noto Sans JP (400/500/700) | Google Fonts CDN から読み込み |
-| 背景色 | `#F8FAFC` (slate-50) | — |
-| テキスト色 | `#1E293B` (slate-800) | — |
+| Item | Value | Notes |
+|------|-------|-------|
+| Main Color | `#1E293B` (Log Navy) | Trust and record imagery |
+| Accent Color | `#FACC15` (Po Yellow) | Shining points and excitement |
+| Font | Noto Sans JP (400/500/700) | Loaded from Google Fonts CDN |
+| Background | `#F8FAFC` (slate-50) | — |
+| Text Color | `#1E293B` (slate-800) | — |
 
-### 現在の実装状態
+### Current Implementation Status
 
-| 項目 | 実装状態 | 備考 |
-|------|---------|------|
-| メインカラー | **一部異なる** | 実装ではアクセントに `#3B82F6`（blue-500）を多用。ネイビーはテーマカラーのみ |
-| アクセントカラー | **一部使用** | ご褒美画面の FAB ボタンとアンロック済みカードに黄色系を使用 |
-| フォント | **実装済み** | Noto Sans JP + フォールバック（Hiragino, Meiryo 等） |
-| 丸文字系フォント | **未実装** | 仕様では「親しみやすい丸文字系サンセリフ」だが、Noto Sans JP を採用 |
+| Item | Status | Notes |
+|------|--------|-------|
+| Main Color | **Partially different** | Implementation uses `#3B82F6` (blue-500) heavily for accents. Navy is only used as theme color |
+| Accent Color | **Partially used** | Yellow used in Rewards screen FAB button and unlocked cards |
+| Font | **Implemented** | Noto Sans JP + fallbacks (Hiragino, Meiryo, etc.) |
+| Rounded font | **Not implemented** | Spec mentions "friendly rounded sans-serif" but Noto Sans JP was adopted |

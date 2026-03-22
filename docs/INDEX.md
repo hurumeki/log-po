@@ -1,13 +1,13 @@
-# ログポ（Log-Po）仕様書 目次
+# Log-Po Specification Index
 
-> 機能の実装・修正を行う前に、この目次を確認し、関連するファイルのみを参照すること。
+> Before implementing or modifying features, check this index and refer only to the relevant files.
 
-| ファイル | 内容 | 主な参照場面 |
-|----------|------|-------------|
-| [01-overview.md](./01-overview.md) | プロジェクト概要・技術スタック・ビルド設定 | 新規セットアップ、技術選定の確認 |
-| [02-design.md](./02-design.md) | デザイン・ブランディング（カラー、フォント） | UI変更、スタイル修正 |
-| [03-screens.md](./03-screens.md) | 画面構成（ミッション/カレンダー/ご褒美/設定）・モーダル・演出 | 画面の機能追加・修正、UI実装 |
-| [04-data.md](./04-data.md) | データ構造（IndexedDB 4ストア） | DB スキーマ変更、データ操作 |
-| [05-logic.md](./05-logic.md) | 主要な処理フロー（達成/リセット/バックアップ） | ビジネスロジックの変更 |
-| [06-file-structure.md](./06-file-structure.md) | ファイル構成 | ファイル追加・リファクタリング |
-| [07-backlog.md](./07-backlog.md) | 未実装機能一覧・既知のUI課題・更新履歴 | 新機能実装時の仕様確認、リリースノート更新 |
+| File | Contents | When to Reference |
+|------|----------|-------------------|
+| [01-overview.md](./01-overview.md) | Project overview, tech stack, build config | New setup, technology decisions |
+| [02-design.md](./02-design.md) | Design & branding (colors, fonts) | UI changes, style fixes |
+| [03-screens.md](./03-screens.md) | Screen layout (Mission/Calendar/Rewards/Settings), modals, effects | Screen feature additions/modifications, UI implementation |
+| [04-data.md](./04-data.md) | Data structures (IndexedDB, 4 stores) | DB schema changes, data operations |
+| [05-logic.md](./05-logic.md) | Core processing flows (completion/reset/backup) | Business logic changes |
+| [06-file-structure.md](./06-file-structure.md) | File structure | File additions, refactoring |
+| [07-backlog.md](./07-backlog.md) | Unimplemented features, known UI issues, changelog | Feature implementation reference, release notes |

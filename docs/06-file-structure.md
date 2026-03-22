@@ -1,4 +1,4 @@
-# 7. ファイル構成
+# 7. File Structure
 
 ```
 log-po/
@@ -11,39 +11,39 @@ log-po/
 ├── src/
 │   ├── components/
 │   │   ├── MissionScreen/
-│   │   │   ├── MissionScreen.jsx    # メイン画面（ヘッダー + リスト + FAB）
-│   │   │   ├── MissionList.jsx      # ミッション一覧（ルート取得 + 空状態）
-│   │   │   ├── MissionItem.jsx      # 個別ミッション（再帰的ツリー描画）
-│   │   │   ├── AddMissionModal.jsx  # ミッション追加/編集モーダル
-│   │   │   └── PointsHeader.jsx     # 累計ポイントヘッダー
+│   │   │   ├── MissionScreen.jsx    # Main screen (header + list + FAB)
+│   │   │   ├── MissionList.jsx      # Mission list (root fetch + empty state)
+│   │   │   ├── MissionItem.jsx      # Individual mission (recursive tree rendering)
+│   │   │   ├── AddMissionModal.jsx  # Mission add/edit modal
+│   │   │   └── PointsHeader.jsx     # Total points header
 │   │   ├── CalendarScreen/
-│   │   │   └── CalendarScreen.jsx   # カレンダー + 達成ログ表示
+│   │   │   └── CalendarScreen.jsx   # Calendar + achievement log display
 │   │   ├── RewardsScreen/
-│   │   │   ├── RewardsScreen.jsx    # ご褒美リスト画面
-│   │   │   └── AddRewardModal.jsx   # ご褒美追加モーダル
+│   │   │   ├── RewardsScreen.jsx    # Rewards list screen
+│   │   │   └── AddRewardModal.jsx   # Reward add modal
 │   │   ├── SettingsScreen/
-│   │   │   └── SettingsScreen.jsx   # 設定・データ管理画面
-│   │   ├── BottomNav.jsx            # ボトムナビゲーション
-│   │   └── RewardUnlockModal.jsx    # ご褒美解禁祝福モーダル
+│   │   │   └── SettingsScreen.jsx   # Settings & data management screen
+│   │   ├── BottomNav.jsx            # Bottom navigation
+│   │   └── RewardUnlockModal.jsx    # Reward unlock celebration modal
 │   ├── db/
-│   │   └── db.js                    # Dexie DB 定義 + ビジネスロジック
+│   │   └── db.js                    # Dexie DB definition + business logic
 │   ├── utils/
-│   │   └── confetti.js              # 紙吹雪エフェクト関数
-│   ├── App.jsx                      # ルートコンポーネント
-│   ├── main.jsx                     # エントリポイント
-│   └── index.css                    # グローバルスタイル + アニメーション
+│   │   └── confetti.js              # Confetti effect function
+│   ├── App.jsx                      # Root component
+│   ├── main.jsx                     # Entry point
+│   └── index.css                    # Global styles + animations
 ├── index.html
 ├── vite.config.js
 ├── package.json
 ├── netlify.toml
 ├── CLAUDE.md
 └── docs/
-    ├── INDEX.md                     # 仕様書目次
-    ├── 01-overview.md               # プロジェクト概要・技術スタック
-    ├── 02-design.md                 # デザイン・ブランディング
-    ├── 03-screens.md                # 画面構成
-    ├── 04-data.md                   # データ構造
-    ├── 05-logic.md                  # 処理フロー
-    ├── 06-file-structure.md         # ファイル構成（本ファイル）
-    └── 07-backlog.md                # 未実装機能・課題・更新履歴
+    ├── INDEX.md                     # Specification index
+    ├── 01-overview.md               # Project overview & tech stack
+    ├── 02-design.md                 # Design & branding
+    ├── 03-screens.md                # Screen layout
+    ├── 04-data.md                   # Data structures
+    ├── 05-logic.md                  # Processing flows
+    ├── 06-file-structure.md         # File structure (this file)
+    └── 07-backlog.md                # Unimplemented features, issues, changelog
 ```

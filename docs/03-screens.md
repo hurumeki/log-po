@@ -1,122 +1,122 @@
-# 4. 画面構成
+# 4. Screen Layout
 
-画面下部のボトムナビゲーションで4画面を切り替え（`max-w-md` = 448px でモバイル幅に制限）。
-
----
-
-## 4.1 ミッション画面（Home）
-
-**仕様:**
-- ヘッダーに累計ポイントを大きく表示
-- 次の報酬までのプログレスバー
-- カテゴリ別のアコーディオン形式の3階層リスト
-- タップでチェック → ポイント獲得演出
-- FAB（+）ボタンで新規ミッション追加
-
-**実装状態:**
-
-| 機能 | 状態 | 詳細 |
-|------|------|------|
-| 累計ポイント表示 | **実装済み** | 青い固定ヘッダーに `🪙 X pt` で表示 |
-| 次の報酬プログレス | **実装済み** | 「次の報酬: あと ○○ pt」をテキスト表示 |
-| プログレスバー | **未実装** | 仕様ではバー表示だが、テキストのみ |
-| 3階層アコーディオン | **実装済み** | depth 0 = カテゴリ / depth 1 = サブカテゴリ / depth 2 = タスク |
-| 完了演出 | **実装済み** | `+X pt!!` ポップアップ + チェックバウンスアニメーション |
-| SE（効果音） | **未実装** | 仕様では「ポチャリン！」音を想定 |
-| FAB ボタン | **実装済み** | 右下に青い丸ボタン |
-
-### ミッション設定項目
-
-| 項目 | 仕様 | 実装状態 |
-|------|------|---------|
-| タイトル | 必須 | **実装済み** |
-| 詳細メモ | 任意 | **実装済み** |
-| 間隔（日次/週次/月次） | 必須 | **実装済み** |
-| 週次の基準曜日 | 週次選択時のみ | **実装済み** |
-| ポイント | デフォルト 10pt | **実装済み** |
-| 親カテゴリ指定 | 新規作成時のみ | **実装済み**（depth < 2 の既存ミッションから選択） |
-
-### リセット（リサイクル）の仕様
-
-| 間隔 | ルール | 実装状態 |
-|------|--------|---------|
-| 日次 | 毎日0時にリセット | **実装済み** |
-| 週次 | 指定曜日を基準にリセット（ISO 週起算） | **実装済み** |
-| 月次 | 毎月1日にリセット | **実装済み** |
-
-リセットは `runResetCheck()` がアプリ起動時に実行される。
+Screens are switched via bottom navigation with 4 tabs (`max-w-md` = 448px, constrained to mobile width).
 
 ---
 
-## 4.2 カレンダー画面（History）
+## 4.1 Mission Screen (Home)
 
-**仕様:**
-- 月間カレンダーに達成スタンプを表示
-- 日付タップでその日の達成ログ（スナップショット）を表示
-- 「失敗」は記録しない — 自分がどれだけ頑張ったかを見るポジティブな場所
+**Specification:**
+- Display total points prominently in the header
+- Progress bar to next reward
+- Category-based accordion with 3-level hierarchy
+- Tap to check → point earning animation
+- FAB (+) button for adding new missions
 
-**実装状態:**
+**Implementation Status:**
 
-| 機能 | 状態 | 詳細 |
-|------|------|------|
-| 月間カレンダー | **実装済み** | 前月/次月ナビゲーション付き |
-| 曜日の色分け | **実装済み** | 日曜 = 赤、土曜 = 青 |
-| 今日のハイライト | **実装済み** | 青背景 + 白テキスト |
-| 達成スタンプ | **実装済み** | 💮 絵文字で表示 |
-| 合計ポイント表示 | **未実装** | 仕様ではスタンプの代わりに「その日稼いだ合計ポイント」も想定 |
-| 日付タップ → 詳細 | **実装済み** | カレンダー下部に達成一覧（階層パンくず + ポイント） |
-| スナップショット保存 | **実装済み** | 達成当時のミッション名・階層・ポイントをコピー保存 |
+| Feature | Status | Details |
+|---------|--------|---------|
+| Total points display | **Implemented** | Shown as `🪙 X pt` in blue fixed header |
+| Next reward progress | **Implemented** | Text display: "Next reward: X pt remaining" |
+| Progress bar | **Not implemented** | Spec calls for a bar, only text is shown |
+| 3-level accordion | **Implemented** | depth 0 = category / depth 1 = subcategory / depth 2 = task |
+| Completion animation | **Implemented** | `+X pt!!` popup + check bounce animation |
+| Sound effects (SE) | **Not implemented** | Spec mentions a "pocharin!" sound |
+| FAB button | **Implemented** | Blue circular button at bottom-right |
 
----
+### Mission Settings
 
-## 4.3 ご褒美画面（Rewards）
+| Item | Spec | Status |
+|------|------|--------|
+| Title | Required | **Implemented** |
+| Detail memo | Optional | **Implemented** |
+| Interval (daily/weekly/monthly) | Required | **Implemented** |
+| Weekly reference day | Only when weekly is selected | **Implemented** |
+| Points | Default 10pt | **Implemented** |
+| Parent category | Only on creation | **Implemented** (selectable from existing missions with depth < 2) |
 
-**仕様:**
-- 累計ポイント表示
-- 報酬カードを必要ポイント順にリスト表示
-- 達成済み（GET!）と未達成（ロック 🔒）の視覚的区別
-- FAB で新規報酬追加
+### Reset (Recycle) Rules
 
-**実装状態:**
+| Interval | Rule | Status |
+|----------|------|--------|
+| Daily | Reset at midnight every day | **Implemented** |
+| Weekly | Reset based on specified weekday (ISO week calculation) | **Implemented** |
+| Monthly | Reset on the 1st of every month | **Implemented** |
 
-| 機能 | 状態 | 詳細 |
-|------|------|------|
-| 累計ポイント表示 | **実装済み** | ヘッダー右に `所持: X pt` バッジ |
-| 報酬リスト | **実装済み** | `requiredPoints` 昇順ソート |
-| 達成済み表示 | **実装済み** | `GET! 🎉` + 解禁日 + 黄色背景 |
-| 未達成表示 | **実装済み** | 🔒 + プログレスバー + パーセント + 残りポイント |
-| 報酬の追加 | **実装済み** | 黄色 FAB ボタン → モーダル |
-| 報酬の削除 | **実装済み** | カード右上の × ボタン |
-| 報酬の編集 | **未実装** | 仕様にはないが、削除のみ対応 |
-
----
-
-## 4.4 設定画面（Settings）
-
-**仕様:**
-- 通知設定
-- データのバックアップ / 復元
-- 履歴の消去
-
-**実装状態:**
-
-| 機能 | 状態 | 詳細 |
-|------|------|------|
-| データエクスポート (JSON) | **実装済み** | `logpo-backup-YYYY-MM-DD.json` でダウンロード。青ボタン + ダウンロードアイコン |
-| データインポート | **実装済み** | JSON ファイルを読み込んで復元。グレーボタン + アップロードアイコン |
-| 履歴の消去 | **実装済み** | 確認ダイアログ付き。累計ポイントは維持。赤枠ボタン + ゴミ箱アイコン |
-| 通知設定 | **未実装** | トグルスイッチ、通知時間の設定は未対応 |
+Reset is executed by `runResetCheck()` at app startup.
 
 ---
 
-## 4.5 共通モーダル・演出
+## 4.2 Calendar Screen (History)
 
-| 機能 | 状態 | 詳細 |
-|------|------|------|
-| ミッション追加/編集モーダル | **実装済み** | ボトムシート形式 |
-| 報酬追加モーダル | **実装済み** | ボトムシート形式 |
-| 達成時ポイント演出 | **実装済み** | `+X pt!!` ポップアップ (CSS アニメーション 0.9秒) |
-| チェックバウンス | **実装済み** | 0.4秒のバウンスアニメーション |
-| ご褒美解禁演出 | **実装済み** | 全画面モーダル + canvas-confetti 紙吹雪 |
-| 効果音（SE） | **未実装** | 仕様の「ポチャリン！」音は未対応 |
-| ファンファーレ演出 | **未実装** | 仕様の「ファンファーレ」音は未対応 |
+**Specification:**
+- Display achievement stamps on a monthly calendar
+- Tap a date to show achievement log (snapshot) for that day
+- "Failures" are never recorded — this is a positive space to see how much you've accomplished
+
+**Implementation Status:**
+
+| Feature | Status | Details |
+|---------|--------|---------|
+| Monthly calendar | **Implemented** | With prev/next month navigation |
+| Weekday coloring | **Implemented** | Sunday = red, Saturday = blue |
+| Today highlight | **Implemented** | Blue background + white text |
+| Achievement stamp | **Implemented** | Displayed as 💮 emoji |
+| Total points display | **Not implemented** | Spec also envisions showing daily point totals alongside stamps |
+| Date tap → details | **Implemented** | Achievement list below calendar (hierarchy breadcrumb + points) |
+| Snapshot storage | **Implemented** | Copies mission name, hierarchy, and points at time of achievement |
+
+---
+
+## 4.3 Rewards Screen
+
+**Specification:**
+- Display total points
+- List reward cards sorted by required points
+- Visual distinction between achieved (GET!) and locked (🔒)
+- FAB for adding new rewards
+
+**Implementation Status:**
+
+| Feature | Status | Details |
+|---------|--------|---------|
+| Total points display | **Implemented** | Badge showing `Owned: X pt` in header right |
+| Rewards list | **Implemented** | Sorted ascending by `requiredPoints` |
+| Achieved display | **Implemented** | `GET! 🎉` + unlock date + yellow background |
+| Locked display | **Implemented** | 🔒 + progress bar + percentage + remaining points |
+| Add reward | **Implemented** | Yellow FAB button → modal |
+| Delete reward | **Implemented** | × button on card top-right |
+| Edit reward | **Not implemented** | Not in spec; only delete is supported |
+
+---
+
+## 4.4 Settings Screen
+
+**Specification:**
+- Notification settings
+- Data backup / restore
+- History clear
+
+**Implementation Status:**
+
+| Feature | Status | Details |
+|---------|--------|---------|
+| Data export (JSON) | **Implemented** | Downloads as `logpo-backup-YYYY-MM-DD.json`. Blue button + download icon |
+| Data import | **Implemented** | Reads JSON file to restore. Gray button + upload icon |
+| History clear | **Implemented** | With confirmation dialog. Total points are preserved. Red-outlined button + trash icon |
+| Notification settings | **Not implemented** | Toggle switch and notification time settings are not supported |
+
+---
+
+## 4.5 Common Modals & Effects
+
+| Feature | Status | Details |
+|---------|--------|---------|
+| Mission add/edit modal | **Implemented** | Bottom sheet style |
+| Reward add modal | **Implemented** | Bottom sheet style |
+| Completion point animation | **Implemented** | `+X pt!!` popup (CSS animation 0.9s) |
+| Check bounce | **Implemented** | 0.4s bounce animation |
+| Reward unlock animation | **Implemented** | Full-screen modal + canvas-confetti |
+| Sound effects (SE) | **Not implemented** | Spec's "pocharin!" sound not supported |
+| Fanfare animation | **Not implemented** | Spec's "fanfare" sound not supported |
