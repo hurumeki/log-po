@@ -77,6 +77,7 @@ export default function AddMissionModal({ missions, editing, onClose }) {
 
   async function handleSubmit(e) {
     e.preventDefault();
+    if (!title.trim()) return;
 
     if (editing) {
       if (isEditingCategory) {
@@ -347,7 +348,7 @@ export default function AddMissionModal({ missions, editing, onClose }) {
               <input
                 type="number"
                 value={points}
-                onChange={e => setPoints(e.target.value)}
+                onChange={e => setPoints(Math.max(1, Number(e.target.value) || 1))}
                 min={1}
                 className="flex-1 border border-slate-200 rounded-lg px-3 py-2.5 text-sm outline-none focus:border-blue-400"
               />

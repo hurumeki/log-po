@@ -4,7 +4,7 @@ import { useLiveQuery } from 'dexie-react-hooks';
 import MissionList from './MissionList';
 import AddMissionModal from './AddMissionModal';
 import PointsHeader from './PointsHeader';
-import { cancelScheduledNotification } from '../../utils/notification';
+import { cancelScheduledNotification, scheduleNotification } from '../../utils/notification';
 
 export default function MissionScreen({ onRewardUnlocked, onPointsChanged }) {
   const [showModal, setShowModal] = useState(false);
@@ -89,6 +89,12 @@ export default function MissionScreen({ onRewardUnlocked, onPointsChanged }) {
       .reverse().sortBy('achievedAt');
     if (historyEntries.length > 0) {
       await db.history.delete(historyEntries[0].id);
+    }
+
+    // Reschedule notification since there are now incomplete tasks
+    const { enabled, time } = await getNotificationSettings();
+    if (enabled && time) {
+      scheduleNotification(() => db.missions.toArray(), time);
     }
   }, [onPointsChanged]);
 

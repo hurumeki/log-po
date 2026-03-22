@@ -1,7 +1,18 @@
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 export default function ContextMenu({ onEdit, onDelete, className = '', size = 'default' }) {
   const [open, setOpen] = useState(false);
+
+  const handleKeyDown = useCallback((e) => {
+    if (e.key === 'Escape') setOpen(false);
+  }, []);
+
+  useEffect(() => {
+    if (open) {
+      document.addEventListener('keydown', handleKeyDown);
+      return () => document.removeEventListener('keydown', handleKeyDown);
+    }
+  }, [open, handleKeyDown]);
 
   const sizeClass = size === 'small'
     ? 'min-w-[44px] min-h-[36px] py-0'
