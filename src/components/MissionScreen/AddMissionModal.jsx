@@ -45,6 +45,12 @@ export default function AddMissionModal({ missions, editing, onClose }) {
   // Check if editing a category/subcategory (non-leaf with children)
   const isEditingCategory = editing && editing.depth < 2 && missions.some(m => m.parentId === editing.id);
 
+  // Prevent background scrolling while modal is open
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => { document.body.style.overflow = ''; };
+  }, []);
+
   useEffect(() => {
     if (editing) {
       setTitle(editing.title);
@@ -154,10 +160,11 @@ export default function AddMissionModal({ missions, editing, onClose }) {
   }
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-end z-[60]" onClick={onClose}>
+    <div className="fixed inset-0 bg-black/50 flex items-end z-[60]" onClick={onClose} onTouchMove={e => e.preventDefault()}>
       <div
-        className="bg-white w-full rounded-t-2xl p-4 pb-[max(1rem,env(safe-area-inset-bottom))] max-w-md mx-auto max-h-[90vh] overflow-y-auto"
+        className="bg-white w-full rounded-t-2xl p-4 pb-[max(1rem,env(safe-area-inset-bottom))] max-w-md mx-auto max-h-[90vh] overflow-y-auto overscroll-contain"
         onClick={e => e.stopPropagation()}
+        onTouchMove={e => e.stopPropagation()}
       >
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-bold text-slate-800">
