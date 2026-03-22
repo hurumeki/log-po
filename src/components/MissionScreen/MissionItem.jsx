@@ -31,39 +31,59 @@ export default function MissionItem({ mission, missions, onComplete, onUncomplet
     ? `週次:${WEEKDAYS[mission.weekday]}曜`
     : INTERVAL_LABELS[mission.interval] || '';
 
+  // Count all descendant tasks for delete confirmation
+  function countDescendantTasks(parentId) {
+    const kids = missions.filter(m => m.parentId === parentId);
+    let count = 0;
+    for (const kid of kids) {
+      const grandkids = missions.filter(m => m.parentId === kid.id);
+      if (grandkids.length === 0) count++; // leaf = task
+      else count += countDescendantTasks(kid.id);
+    }
+    return count;
+  }
+
   // depth 0: category section header
   if (mission.depth === 0 && !isLeaf) {
     return (
-      <div className="mt-3">
+      <div className="mt-2">
         <button
           onClick={() => setExpanded(e => !e)}
-          className="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-slate-50 relative"
+          className="w-full flex items-center justify-between px-4 py-1.5 text-left hover:bg-slate-50 relative"
         >
-          <span className="font-semibold text-slate-700">{mission.title}</span>
-          <div className="flex items-center gap-2">
+          <span className="font-semibold text-slate-700 text-sm">{mission.title}</span>
+          <div className="flex items-center gap-1">
             <button
               onClick={e => { e.stopPropagation(); setShowMenu(s => !s); }}
-              className="text-slate-400 px-2 py-2 text-sm min-w-[44px] min-h-[44px] flex items-center justify-center"
+              className="text-slate-400 px-2 py-1 text-sm min-w-[44px] min-h-[44px] flex items-center justify-center"
             >
               ⋯
             </button>
-            <span className="text-slate-400 text-sm">{expanded ? '▼' : '▶'}</span>
+            <span className="text-slate-400 text-xs">{expanded ? '▼' : '▶'}</span>
           </div>
           {showMenu && (
-            <div className="absolute right-8 top-10 bg-white border border-slate-200 rounded-lg shadow-lg z-20 text-sm overflow-hidden">
-              <button
-                onClick={e => { e.stopPropagation(); setShowMenu(false); onEdit(mission); }}
-                className="block w-full text-left px-4 py-2 hover:bg-slate-50"
-              >
-                ✏️ 編集
-              </button>
-              <button
-                onClick={e => { e.stopPropagation(); setShowMenu(false); if (window.confirm(`「${mission.title}」を削除しますか？`)) onDelete(mission); }}
-                className="block w-full text-left px-4 py-2 hover:bg-red-50 text-red-600"
-              >
-                🗑 削除
-              </button>
-            </div>
+            <>
+              <div className="fixed inset-0 z-10" onClick={e => { e.stopPropagation(); setShowMenu(false); }} />
+              <div className="absolute right-8 top-8 bg-white border border-slate-200 rounded-lg shadow-lg z-20 text-sm overflow-hidden">
+                <button
+                  onClick={e => { e.stopPropagation(); setShowMenu(false); onEdit(mission); }}
+                  className="block w-full text-left px-4 py-2 hover:bg-slate-50"
+                >
+                  ✏️ 編集
+                </button>
+                <button
+                  onClick={e => {
+                    e.stopPropagation();
+                    setShowMenu(false);
+                    const taskCount = countDescendantTasks(mission.id);
+                    if (window.confirm(`「${mission.title}」を削除しますか？\n\nこのカテゴリ内の${taskCount}件のミッションもすべて削除されます。`)) onDelete(mission);
+                  }}
+                  className="block w-full text-left px-4 py-2 hover:bg-red-50 text-red-600"
+                >
+                  🗑 削除
+                </button>
+              </div>
+            </>
           )}
         </button>
 
@@ -89,30 +109,37 @@ export default function MissionItem({ mission, missions, onComplete, onUncomplet
   // depth 1: sub-group header with left blue border
   if (!isLeaf) {
     return (
-      <div className="mx-4 mt-2 mb-1">
-        <div className="flex items-center justify-between pl-3 py-1.5 border-l-2 border-blue-500 relative">
-          <span className="font-medium text-slate-600 text-sm">{mission.title}</span>
+      <div className="mx-4 mt-0.5 mb-0.5">
+        <div className="flex items-center justify-between pl-3 py-0 border-l-2 border-blue-500 relative">
+          <span className="font-medium text-slate-600 text-xs">{mission.title}</span>
           <button
             onClick={() => setShowMenu(s => !s)}
-            className="text-slate-400 px-2 py-2 text-sm min-w-[44px] min-h-[44px] flex items-center justify-center"
+            className="text-slate-400 px-2 py-0 text-sm min-w-[44px] min-h-[36px] flex items-center justify-center"
           >
             ⋯
           </button>
           {showMenu && (
-            <div className="absolute right-0 top-8 bg-white border border-slate-200 rounded-lg shadow-lg z-20 text-sm overflow-hidden">
-              <button
-                onClick={() => { setShowMenu(false); onEdit(mission); }}
-                className="block w-full text-left px-4 py-2 hover:bg-slate-50"
-              >
-                ✏️ 編集
-              </button>
-              <button
-                onClick={() => { setShowMenu(false); if (window.confirm(`「${mission.title}」を削除しますか？`)) onDelete(mission); }}
-                className="block w-full text-left px-4 py-2 hover:bg-red-50 text-red-600"
-              >
-                🗑 削除
-              </button>
-            </div>
+            <>
+              <div className="fixed inset-0 z-10" onClick={() => setShowMenu(false)} />
+              <div className="absolute right-0 top-8 bg-white border border-slate-200 rounded-lg shadow-lg z-20 text-sm overflow-hidden">
+                <button
+                  onClick={() => { setShowMenu(false); onEdit(mission); }}
+                  className="block w-full text-left px-4 py-2 hover:bg-slate-50"
+                >
+                  ✏️ 編集
+                </button>
+                <button
+                  onClick={() => {
+                    setShowMenu(false);
+                    const taskCount = countDescendantTasks(mission.id);
+                    if (window.confirm(`「${mission.title}」を削除しますか？\n\nこのサブカテゴリ内の${taskCount}件のミッションもすべて削除されます。`)) onDelete(mission);
+                  }}
+                  className="block w-full text-left px-4 py-2 hover:bg-red-50 text-red-600"
+                >
+                  🗑 削除
+                </button>
+              </div>
+            </>
           )}
         </div>
 
@@ -174,20 +201,23 @@ export default function MissionItem({ mission, missions, onComplete, onUncomplet
       </button>
 
       {showMenu && (
-        <div className="absolute right-2 top-10 bg-white border border-slate-200 rounded-lg shadow-lg z-20 text-sm overflow-hidden">
-          <button
-            onClick={() => { setShowMenu(false); onEdit(mission); }}
-            className="block w-full text-left px-4 py-2 hover:bg-slate-50"
-          >
-            ✏️ 編集
-          </button>
-          <button
-            onClick={() => { setShowMenu(false); if (window.confirm(`「${mission.title}」を削除しますか？`)) onDelete(mission); }}
-            className="block w-full text-left px-4 py-2 hover:bg-red-50 text-red-600"
-          >
-            🗑 削除
-          </button>
-        </div>
+        <>
+          <div className="fixed inset-0 z-10" onClick={() => setShowMenu(false)} />
+          <div className="absolute right-2 top-10 bg-white border border-slate-200 rounded-lg shadow-lg z-20 text-sm overflow-hidden">
+            <button
+              onClick={() => { setShowMenu(false); onEdit(mission); }}
+              className="block w-full text-left px-4 py-2 hover:bg-slate-50"
+            >
+              ✏️ 編集
+            </button>
+            <button
+              onClick={() => { setShowMenu(false); if (window.confirm(`「${mission.title}」を削除しますか？`)) onDelete(mission); }}
+              className="block w-full text-left px-4 py-2 hover:bg-red-50 text-red-600"
+            >
+              🗑 削除
+            </button>
+          </div>
+        </>
       )}
     </div>
   );

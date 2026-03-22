@@ -12,6 +12,12 @@ export default function AddRewardModal({ editing, onClose }) {
     }
   }, [editing]);
 
+  // Prevent background scrolling while modal is open
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => { document.body.style.overflow = ''; };
+  }, []);
+
   async function handleSubmit(e) {
     e.preventDefault();
     const data = {
@@ -28,10 +34,11 @@ export default function AddRewardModal({ editing, onClose }) {
   }
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-end z-[60]" onClick={onClose}>
+    <div className="fixed inset-0 bg-black/50 flex items-end z-[60]" onClick={onClose} onTouchMove={e => e.preventDefault()}>
       <div
         className="bg-white w-full rounded-t-2xl p-4 pb-[max(1rem,env(safe-area-inset-bottom))] max-w-md mx-auto"
         onClick={e => e.stopPropagation()}
+        onTouchMove={e => e.stopPropagation()}
       >
         <h2 className="text-lg font-bold text-slate-800 mb-4">
           {editing ? '報酬編集' : '報酬追加'}

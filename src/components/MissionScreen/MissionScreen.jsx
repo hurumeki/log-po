@@ -75,7 +75,20 @@ export default function MissionScreen({ onRewardUnlocked, onPointsChanged }) {
 
   const handleUncomplete = useCallback(async (mission) => {
     await db.missions.update(mission.id, { completedAt: null });
-  }, []);
+
+    // Subtract points
+    const newTotal = await addPoints(-mission.points);
+    setTotalPoints(newTotal);
+    onPointsChanged?.();
+
+    // Remove the most recent history entry for this mission
+    const historyEntries = await db.history
+      .where('missionId').equals(mission.id)
+      .reverse().sortBy('achievedAt');
+    if (historyEntries.length > 0) {
+      await db.history.delete(historyEntries[0].id);
+    }
+  }, [onPointsChanged]);
 
   const handleDelete = useCallback(async (mission) => {
     // Delete all descendants first
