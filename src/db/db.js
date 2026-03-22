@@ -25,9 +25,12 @@ export async function getTotalPoints() {
 }
 
 export async function addPoints(pts) {
-  const current = await getTotalPoints();
-  await setUserData('totalPoints', current + pts);
-  return current + pts;
+  return db.transaction('rw', db.userData, async () => {
+    const current = await getTotalPoints();
+    const newTotal = Math.max(0, current + pts);
+    await setUserData('totalPoints', newTotal);
+    return newTotal;
+  });
 }
 
 // -------- Reset Logic --------
@@ -55,33 +58,35 @@ export async function runResetCheck() {
     return;
   }
 
-  const missions = await db.missions.toArray();
+  await db.transaction('rw', db.missions, db.userData, async () => {
+    const missions = await db.missions.toArray();
 
-  for (const m of missions) {
-    if (!m.completedAt) continue;
-    const completed = new Date(m.completedAt);
+    for (const m of missions) {
+      if (!m.completedAt) continue;
+      const completed = new Date(m.completedAt);
 
-    let shouldReset = false;
-    if (m.interval === 'daily') {
-      const today = new Date(now); today.setHours(0,0,0,0);
-      const completedDay = new Date(completed); completedDay.setHours(0,0,0,0);
-      shouldReset = today > completedDay;
-    } else if (m.interval === 'weekly') {
-      const currentWeekStart = getWeekStart(now, m.weekday ?? 1);
-      const completedWeekStart = getWeekStart(completed, m.weekday ?? 1);
-      shouldReset = currentWeekStart > completedWeekStart;
-    } else if (m.interval === 'monthly') {
-      const currentMonth = getMonthStart(now);
-      const completedMonth = getMonthStart(completed);
-      shouldReset = currentMonth > completedMonth;
+      let shouldReset = false;
+      if (m.interval === 'daily') {
+        const today = new Date(now); today.setHours(0,0,0,0);
+        const completedDay = new Date(completed); completedDay.setHours(0,0,0,0);
+        shouldReset = today > completedDay;
+      } else if (m.interval === 'weekly') {
+        const currentWeekStart = getWeekStart(now, m.weekday ?? 1);
+        const completedWeekStart = getWeekStart(completed, m.weekday ?? 1);
+        shouldReset = currentWeekStart > completedWeekStart;
+      } else if (m.interval === 'monthly') {
+        const currentMonth = getMonthStart(now);
+        const completedMonth = getMonthStart(completed);
+        shouldReset = currentMonth > completedMonth;
+      }
+
+      if (shouldReset) {
+        await db.missions.update(m.id, { completedAt: null });
+      }
     }
 
-    if (shouldReset) {
-      await db.missions.update(m.id, { completedAt: null });
-    }
-  }
-
-  await setUserData('lastResetCheck', now.toISOString());
+    await setUserData('lastResetCheck', now.toISOString());
+  });
 }
 
 // -------- Reward unlock check --------
@@ -124,6 +129,17 @@ export async function exportAllData() {
 }
 
 export async function importAllData(data) {
+  if (!data || typeof data !== 'object') {
+    throw new Error('Invalid import data: expected an object');
+  }
+
+  const tables = ['missions', 'history', 'rewards', 'userData'];
+  for (const table of tables) {
+    if (data[table] !== undefined && !Array.isArray(data[table])) {
+      throw new Error(`Invalid import data: "${table}" must be an array`);
+    }
+  }
+
   await db.transaction('rw', db.missions, db.history, db.rewards, db.userData, async () => {
     await db.missions.clear();
     await db.history.clear();

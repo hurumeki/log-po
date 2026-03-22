@@ -9,7 +9,10 @@ function getMonthDays(year, month) {
 }
 
 function toDateStr(date) {
-  return date.toISOString().slice(0, 10);
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, '0');
+  const d = String(date.getDate()).padStart(2, '0');
+  return `${y}-${m}-${d}`;
 }
 
 export default function CalendarScreen() {
@@ -25,7 +28,7 @@ export default function CalendarScreen() {
   // Group history by date
   const byDate = {};
   for (const h of history) {
-    const dateStr = new Date(h.achievedAt).toISOString().slice(0, 10);
+    const dateStr = toDateStr(new Date(h.achievedAt));
     if (!byDate[dateStr]) byDate[dateStr] = [];
     byDate[dateStr].push(h);
   }

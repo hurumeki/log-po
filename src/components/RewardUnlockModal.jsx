@@ -1,10 +1,16 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { fireConfetti } from '../utils/confetti';
 
 export default function RewardUnlockModal({ reward, onClose }) {
+  const onCloseRef = useRef(onClose);
+
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  }, [onClose]);
+
   useEffect(() => {
     fireConfetti();
-    const timer = setTimeout(onClose, 5000);
+    const timer = setTimeout(() => onCloseRef.current(), 5000);
     return () => clearTimeout(timer);
   }, []);
 
