@@ -1,25 +1,31 @@
-# 動作環境
+# Environment
 
-- **Claude Code on the web** 上で動作している
-- 原則、すべての作業はクラウド上で完結させること
-- ローカル環境（ユーザーのPC）への操作や案内は不要
+- Running on **Claude Code on the web**
+- All work must be completed in the cloud
+- No local environment (user's PC) operations or guidance needed
 
-# UIレビュー手順
+# Language Rules
 
-UIの見た目を確認・改善するには、以下の手順を実行する:
+- **Specifications (`docs/`), code comments, and commit messages must be written in English**
+- UI-facing strings (user-visible text in the app) remain in Japanese
 
-```bash
-npm run build && npx playwright test e2e/ui-review.spec.js
-```
+# Specifications
 
-1. `e2e/screenshots/` にスクリーンショットが保存される
-2. 全画像を確認し、P0〜P3の優先度でUIの問題を洗い出す
-3. P0（操作不能）〜P2（レイアウト崩れ）を修正する
+- Specs are stored in the `docs/` folder, split into multiple files
+- **Before implementing or modifying features, read `docs/INDEX.md` (index) first and refer only to the relevant files**
+  - Do not load all files at once (to save context)
+- Implement according to the specs
+- **If specs change or are added due to implementation, update the relevant spec files at the same time**
+  - Include spec updates in the same commit as the implementation changes
 
-詳細なプロンプトテンプレートは `e2e/UI_REVIEW_PROMPT.md` を参照。
+# UI Review
 
-### レビュー観点
-- **P0**: ボタンが隠れる、操作不能（z-index、overflow）
-- **P1**: タッチターゲット不足（44x44px未満）、コントラスト不足
-- **P2**: 完了状態のフィードバック不足、レイアウト崩れ
-- **P3**: スペーシング、フォント一貫性
+- Command: `npm run test:ui`
+- Screenshots are saved to `e2e/screenshots/`
+- See `e2e/UI_REVIEW_PROMPT.md` for detailed steps and review criteria
+
+# Playwright Rules
+
+- **Do not check versions or reinstall** (automatically handled by SessionStart hook)
+- Always use **`npx playwright test`** (global execution is prohibited)
+- Use **Chromium only**
