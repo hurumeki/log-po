@@ -3,8 +3,10 @@ import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import { VitePWA } from 'vite-plugin-pwa'
 
+const base = process.env.VITE_BASE_PATH ?? '/log-po/'
+
 export default defineConfig({
-  base: '/log-po/',
+  base,
   plugins: [
     react(),
     tailwindcss(),
@@ -18,8 +20,8 @@ export default defineConfig({
         theme_color: '#1E293B',
         background_color: '#1E293B',
         display: 'standalone',
-        scope: '/log-po/',
-        start_url: '/log-po/',
+        scope: base,
+        start_url: base,
         icons: [
           {
             src: 'icons/icon-192.png',
