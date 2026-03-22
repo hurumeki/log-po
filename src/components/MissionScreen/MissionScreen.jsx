@@ -1,9 +1,10 @@
 import { useState, useEffect, useCallback } from 'react';
-import { db, getTotalPoints, addPoints, checkRewardUnlocks } from '../../db/db';
+import { db, getTotalPoints, addPoints, checkRewardUnlocks, getNotificationSettings } from '../../db/db';
 import { useLiveQuery } from 'dexie-react-hooks';
 import MissionList from './MissionList';
 import AddMissionModal from './AddMissionModal';
 import PointsHeader from './PointsHeader';
+import { cancelScheduledNotification } from '../../utils/notification';
 
 export default function MissionScreen({ onRewardUnlocked, onPointsChanged }) {
   const [showModal, setShowModal] = useState(false);
@@ -70,6 +71,17 @@ export default function MissionScreen({ onRewardUnlocked, onPointsChanged }) {
     const unlocked = await checkRewardUnlocks(newTotal);
     if (unlocked.length > 0) {
       onRewardUnlocked?.(unlocked[0]);
+    }
+
+    // Smart cancel: if all daily leaf missions are completed, cancel scheduled notification
+    const allMissions = await db.missions.toArray();
+    const incompleteDailyLeaves = allMissions.filter(m => {
+      const isLeaf = !allMissions.some(c => c.parentId === m.id);
+      return isLeaf && m.interval === 'daily' && !m.completedAt;
+    });
+    if (incompleteDailyLeaves.length === 0) {
+      const { enabled } = await getNotificationSettings();
+      if (enabled) cancelScheduledNotification();
     }
   }, [onPointsChanged, onRewardUnlocked]);
 

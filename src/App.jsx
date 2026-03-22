@@ -5,7 +5,8 @@ import CalendarScreen from './components/CalendarScreen/CalendarScreen';
 import RewardsScreen from './components/RewardsScreen/RewardsScreen';
 import SettingsScreen from './components/SettingsScreen/SettingsScreen';
 import RewardUnlockModal from './components/RewardUnlockModal';
-import { runResetCheck } from './db/db';
+import { runResetCheck, getNotificationSettings, db } from './db/db';
+import { scheduleNotification, isNotificationSupported } from './utils/notification';
 
 export default function App() {
   const [tab, setTab] = useState('mission');
@@ -13,7 +14,13 @@ export default function App() {
   const [pointsKey, setPointsKey] = useState(0);
 
   useEffect(() => {
-    runResetCheck();
+    runResetCheck().then(async () => {
+      if (!isNotificationSupported()) return;
+      const { enabled, time } = await getNotificationSettings();
+      if (enabled && Notification.permission === 'granted') {
+        scheduleNotification(() => db.missions.toArray(), time);
+      }
+    });
   }, []);
 
   function handleRewardUnlocked(reward) {

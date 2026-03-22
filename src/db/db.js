@@ -97,6 +97,21 @@ export async function checkRewardUnlocks(totalPoints) {
   return newlyUnlocked;
 }
 
+// -------- Notification Settings --------
+export async function getNotificationSettings() {
+  const enabled = await getUserData('notificationEnabled', false);
+  const time = await getUserData('notificationTime', '21:00');
+  return { enabled, time };
+}
+
+export async function setNotificationEnabled(enabled) {
+  await setUserData('notificationEnabled', enabled);
+}
+
+export async function setNotificationTime(time) {
+  await setUserData('notificationTime', time);
+}
+
 // -------- Export / Import --------
 export async function exportAllData() {
   const [missions, history, rewards, userData] = await Promise.all([
