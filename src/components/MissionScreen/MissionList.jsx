@@ -16,7 +16,7 @@ export default function MissionList({ missions, onComplete, onUncomplete, onDele
   }
 
   return (
-    <div className="py-2">
+    <div className="py-2 pb-20">
       {roots.map(root => (
         <MissionItem
           key={root.id}
