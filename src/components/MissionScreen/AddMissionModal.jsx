@@ -38,7 +38,8 @@ export default function AddMissionModal({ missions, editing, onClose }) {
     if (!missions || !categoryName) return [];
     const cat = allCategories.find(c => c.title === categoryName);
     if (!cat) return [];
-    return missions.filter(m => m.parentId === cat.id && m.depth === 1);
+    // Only include depth-1 missions that have children (actual sub-groups), not leaf tasks
+    return missions.filter(m => m.parentId === cat.id && m.depth === 1 && missions.some(c => c.parentId === m.id));
   }, [missions, categoryName, allCategories]);
 
   // Check if editing a category/subcategory (non-leaf with children)
