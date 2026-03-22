@@ -80,8 +80,10 @@ export default function RewardsScreen() {
                   )}
                 </div>
                 <button
-                  onClick={() => handleDelete(r)}
-                  className="text-slate-300 hover:text-red-400 text-lg"
+                  onClick={() => {
+                    if (window.confirm(`「${r.title}」を削除しますか？`)) handleDelete(r);
+                  }}
+                  className="text-slate-400 hover:text-red-400 active:text-red-500 text-lg min-w-[44px] min-h-[44px] flex items-center justify-center -mr-2"
                 >
                   ×
                 </button>
@@ -92,12 +94,14 @@ export default function RewardsScreen() {
       </div>
 
       {/* FAB */}
-      <button
-        onClick={() => setShowModal(true)}
-        className="fixed bottom-20 right-4 w-14 h-14 bg-yellow-400 text-slate-800 rounded-full text-2xl font-bold shadow-lg flex items-center justify-center z-40"
-      >
-        +
-      </button>
+      <div className="fixed bottom-20 left-1/2 -translate-x-1/2 w-full max-w-md pointer-events-none z-40">
+        <button
+          onClick={() => setShowModal(true)}
+          className="absolute bottom-0 right-4 w-14 h-14 bg-yellow-400 text-slate-800 rounded-full text-2xl font-bold shadow-lg flex items-center justify-center pointer-events-auto"
+        >
+          +
+        </button>
+      </div>
 
       {showModal && (
         <AddRewardModal
