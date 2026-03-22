@@ -106,12 +106,12 @@ export default function MissionItem({ mission, missions, onComplete, onUncomplet
   // depth 1: sub-group header with left blue border
   if (!isLeaf) {
     return (
-      <div className="mx-4 mt-1 mb-1">
-        <div className="flex items-center justify-between pl-3 py-1 border-l-2 border-blue-500 relative">
-          <span className="font-medium text-slate-600 text-sm">{mission.title}</span>
+      <div className="mx-4 mt-0.5 mb-0.5">
+        <div className="flex items-center justify-between pl-3 py-0 border-l-2 border-blue-500 relative">
+          <span className="font-medium text-slate-600 text-xs">{mission.title}</span>
           <button
             onClick={() => setShowMenu(s => !s)}
-            className="text-slate-400 px-2 py-1 text-sm min-w-[44px] min-h-[44px] flex items-center justify-center"
+            className="text-slate-400 px-2 py-0 text-sm min-w-[44px] min-h-[36px] flex items-center justify-center"
           >
             ⋯
           </button>
