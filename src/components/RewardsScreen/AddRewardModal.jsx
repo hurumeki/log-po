@@ -20,15 +20,18 @@ export default function AddRewardModal({ editing, onClose }) {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    const data = {
-      title: title.trim(),
-      requiredPoints: Number(requiredPoints),
-      unlockedAt: null,
-    };
+    if (!title.trim()) return;
     if (editing) {
-      await db.rewards.update(editing.id, data);
+      await db.rewards.update(editing.id, {
+        title: title.trim(),
+        requiredPoints: Math.max(1, Number(requiredPoints) || 1),
+      });
     } else {
-      await db.rewards.add(data);
+      await db.rewards.add({
+        title: title.trim(),
+        requiredPoints: Math.max(1, Number(requiredPoints) || 1),
+        unlockedAt: null,
+      });
     }
     onClose();
   }

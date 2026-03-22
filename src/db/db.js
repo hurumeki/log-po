@@ -45,7 +45,7 @@ function getWeekStart(date, weekday) {
 }
 
 function getMonthStart(date) {
-  return new Date(date.getFullYear(), date.getMonth(), 1);
+  return new Date(date.getFullYear(), date.getMonth(), 1, 0, 0, 0, 0);
 }
 
 export async function runResetCheck() {
