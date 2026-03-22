@@ -25,7 +25,7 @@ export default function App() {
   }
 
   return (
-    <div className="flex flex-col min-h-svh bg-slate-50 max-w-md mx-auto">
+    <div className="flex flex-col min-h-svh bg-slate-50 w-full">
       <main className="flex-1 overflow-y-auto pb-20">
         {tab === 'mission' && (
           <MissionScreen
