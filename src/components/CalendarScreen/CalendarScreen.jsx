@@ -16,7 +16,7 @@ export default function CalendarScreen() {
   const now = new Date();
   const [year, setYear] = useState(now.getFullYear());
   const [month, setMonth] = useState(now.getMonth());
-  const [selected, setSelected] = useState(null);
+  const [selected, setSelected] = useState(toDateStr(now));
 
   const history = useLiveQuery(() => db.history.toArray(), []);
 
@@ -52,19 +52,24 @@ export default function CalendarScreen() {
 
   return (
     <div>
-      {/* Header */}
-      <div className="bg-slate-800 text-white px-4 py-4 flex items-center justify-between sticky top-0 z-30">
-        <button onClick={prevMonth} className="text-yellow-400 text-xl px-2">‹</button>
-        <span className="font-bold text-lg">{year}年 {MONTH_NAMES[month]}</span>
-        <button onClick={nextMonth} className="text-yellow-400 text-xl px-2">›</button>
+      {/* Page title */}
+      <div className="px-4 pt-6 pb-2">
+        <div className="flex items-center justify-between">
+          <h1 className="text-2xl font-bold text-slate-800">達成カレンダー</h1>
+          <div className="flex items-center gap-1 text-slate-600">
+            <button onClick={prevMonth} className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-slate-100 text-lg">‹</button>
+            <span className="text-sm font-medium">{year}年{MONTH_NAMES[month]}</span>
+            <button onClick={nextMonth} className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-slate-100 text-lg">›</button>
+          </div>
+        </div>
       </div>
 
       {/* Calendar */}
-      <div className="p-3">
+      <div className="px-3 pb-3">
         {/* Day headers */}
         <div className="grid grid-cols-7 mb-1">
           {DAY_NAMES.map((d, i) => (
-            <div key={i} className={`text-center text-xs py-1 font-medium ${i === 0 ? 'text-red-400' : i === 6 ? 'text-blue-400' : 'text-slate-500'}`}>
+            <div key={i} className={`text-center text-xs py-1 font-medium ${i === 0 ? 'text-red-400' : i === 6 ? 'text-blue-400' : 'text-slate-400'}`}>
               {d}
             </div>
           ))}
@@ -72,11 +77,9 @@ export default function CalendarScreen() {
 
         {/* Days grid */}
         <div className="grid grid-cols-7 gap-y-1">
-          {/* Empty cells before month start */}
           {Array.from({ length: firstDay }).map((_, i) => (
             <div key={`empty-${i}`} />
           ))}
-          {/* Day cells */}
           {Array.from({ length: daysInMonth }).map((_, i) => {
             const day = i + 1;
             const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
@@ -91,11 +94,12 @@ export default function CalendarScreen() {
                 key={day}
                 onClick={() => setSelected(isSelected ? null : dateStr)}
                 className={`flex flex-col items-center py-1 rounded-lg transition-colors ${
-                  isSelected ? 'bg-yellow-400' : isToday ? 'bg-slate-100' : 'hover:bg-slate-50'
+                  isToday ? 'bg-blue-600' : isSelected ? 'bg-blue-100' : hasActivity ? 'hover:bg-slate-50' : 'hover:bg-slate-50'
                 }`}
               >
-                <span className={`text-sm ${
-                  isSelected ? 'text-slate-800 font-bold' :
+                <span className={`text-sm font-medium ${
+                  isToday ? 'text-white' :
+                  isSelected ? 'text-blue-700' :
                   dayOfWeek === 0 ? 'text-red-400' :
                   dayOfWeek === 6 ? 'text-blue-400' :
                   'text-slate-700'
@@ -104,11 +108,6 @@ export default function CalendarScreen() {
                 </span>
                 {hasActivity && (
                   <span className="text-xs">💮</span>
-                )}
-                {hasActivity && (
-                  <span className={`text-xs ${isSelected ? 'text-slate-700' : 'text-yellow-600'}`}>
-                    {entries.reduce((s, e) => s + (e.snapshot?.points || 0), 0)}pt
-                  </span>
                 )}
               </button>
             );
@@ -120,20 +119,25 @@ export default function CalendarScreen() {
       {selected && (
         <div className="px-3 slide-down">
           <div className="bg-white rounded-xl p-4 border border-slate-200">
-            <h3 className="font-bold text-slate-700 mb-3">
-              {selected.replace(/-/g, '/')} の達成記録
-            </h3>
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="font-bold text-slate-700">
+                {selected.replace(/-/g, '/')} の記録
+              </h3>
+              <span className="text-sm text-green-600 font-medium">
+                {selectedEntries.length}件達成 🌸
+              </span>
+            </div>
             {selectedEntries.length === 0 ? (
-              <p className="text-slate-400 text-sm">この日の記録はありません</p>
+              <p className="text-slate-400 text-sm text-center py-2">達成記録はありません</p>
             ) : (
               <ul className="space-y-2">
                 {selectedEntries.map(e => (
                   <li key={e.id} className="flex items-center gap-2 text-sm">
-                    <span className="text-yellow-500">✓</span>
+                    <span className="text-blue-500">✓</span>
                     <span className="flex-1 text-slate-700">
                       {e.snapshot?.hierarchy?.join(' › ') || e.snapshot?.title}
                     </span>
-                    <span className="text-yellow-600 text-xs">{e.snapshot?.points}pt</span>
+                    <span className="text-blue-600 text-xs">{e.snapshot?.points}pt</span>
                   </li>
                 ))}
               </ul>

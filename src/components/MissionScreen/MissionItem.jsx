@@ -17,8 +17,6 @@ export default function MissionItem({ mission, missions, onComplete, onUncomplet
   const isLeaf = children.length === 0;
   const isCompleted = !!mission.completedAt;
 
-  const indentClass = mission.depth === 0 ? 'pl-3' : mission.depth === 1 ? 'pl-8' : 'pl-14';
-
   function handleCheck() {
     if (isCompleted) {
       onUncomplete(mission);
@@ -33,80 +31,92 @@ export default function MissionItem({ mission, missions, onComplete, onUncomplet
     ? `週次:${WEEKDAYS[mission.weekday]}曜`
     : INTERVAL_LABELS[mission.interval] || '';
 
-  return (
-    <div>
-      <div
-        className={`flex items-center gap-2 py-2 px-3 ${indentClass} hover:bg-slate-100 relative`}
-      >
-        {/* Expand/collapse or checkbox */}
-        {isLeaf ? (
-          <button
-            onClick={handleCheck}
-            className={`w-6 h-6 rounded border-2 flex items-center justify-center flex-shrink-0 transition-colors ${
-              isCompleted
-                ? 'bg-yellow-400 border-yellow-400'
-                : 'border-slate-400 bg-white'
-            } ${bouncing ? 'check-bounce' : ''}`}
-          >
-            {isCompleted && <span className="text-slate-800 text-sm">✓</span>}
-          </button>
-        ) : (
-          <button
-            onClick={() => setExpanded(e => !e)}
-            className="w-6 h-6 flex items-center justify-center text-slate-500 flex-shrink-0"
-          >
-            {expanded ? '▼' : '▶'}
-          </button>
-        )}
-
-        {/* Title */}
-        <span
-          className={`flex-1 text-sm font-medium ${
-            isCompleted ? 'line-through text-slate-400' : 'text-slate-700'
-          } ${!isLeaf ? 'font-semibold text-slate-800' : ''}`}
-        >
-          {mission.title}
-        </span>
-
-        {/* Badges */}
-        {isLeaf && (
-          <span className="text-xs text-yellow-600 bg-yellow-50 px-1.5 py-0.5 rounded">
-            {mission.points}pt
-          </span>
-        )}
-        <span className="text-xs text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded">
-          {intervalLabel}
-        </span>
-
-        {/* Context menu */}
+  // depth 0: category section header
+  if (mission.depth === 0 && !isLeaf) {
+    return (
+      <div className="mt-3">
         <button
-          onClick={() => setShowMenu(s => !s)}
-          className="text-slate-400 px-1 text-sm"
+          onClick={() => setExpanded(e => !e)}
+          className="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-slate-50 relative"
         >
-          ⋯
+          <span className="font-semibold text-slate-700">{mission.title}</span>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={e => { e.stopPropagation(); setShowMenu(s => !s); }}
+              className="text-slate-400 px-1 text-sm"
+            >
+              ⋯
+            </button>
+            <span className="text-slate-400 text-sm">{expanded ? '▼' : '▶'}</span>
+          </div>
+          {showMenu && (
+            <div className="absolute right-8 top-10 bg-white border border-slate-200 rounded-lg shadow-lg z-20 text-sm overflow-hidden">
+              <button
+                onClick={e => { e.stopPropagation(); setShowMenu(false); onEdit(mission); }}
+                className="block w-full text-left px-4 py-2 hover:bg-slate-50"
+              >
+                ✏️ 編集
+              </button>
+              <button
+                onClick={e => { e.stopPropagation(); setShowMenu(false); onDelete(mission); }}
+                className="block w-full text-left px-4 py-2 hover:bg-red-50 text-red-600"
+              >
+                🗑 削除
+              </button>
+            </div>
+          )}
         </button>
 
-        {showMenu && (
-          <div className="absolute right-2 top-8 bg-white border border-slate-200 rounded-lg shadow-lg z-20 text-sm overflow-hidden">
-            <button
-              onClick={() => { setShowMenu(false); onEdit(mission); }}
-              className="block w-full text-left px-4 py-2 hover:bg-slate-50"
-            >
-              ✏️ 編集
-            </button>
-            <button
-              onClick={() => { setShowMenu(false); onDelete(mission); }}
-              className="block w-full text-left px-4 py-2 hover:bg-red-50 text-red-600"
-            >
-              🗑 削除
-            </button>
+        {expanded && (
+          <div className="slide-down">
+            {children.map(child => (
+              <MissionItem
+                key={child.id}
+                mission={child}
+                missions={missions}
+                onComplete={onComplete}
+                onUncomplete={onUncomplete}
+                onDelete={onDelete}
+                onEdit={onEdit}
+              />
+            ))}
           </div>
         )}
       </div>
+    );
+  }
 
-      {/* Children */}
-      {!isLeaf && expanded && (
-        <div className="slide-down">
+  // depth 1: sub-group header with left blue border
+  if (!isLeaf) {
+    return (
+      <div className="mx-4 mt-2 mb-1">
+        <div className="flex items-center justify-between pl-3 py-1.5 border-l-2 border-blue-500 relative">
+          <span className="font-medium text-slate-600 text-sm">{mission.title}</span>
+          <button
+            onClick={() => setShowMenu(s => !s)}
+            className="text-slate-400 px-1 text-sm"
+          >
+            ⋯
+          </button>
+          {showMenu && (
+            <div className="absolute right-0 top-8 bg-white border border-slate-200 rounded-lg shadow-lg z-20 text-sm overflow-hidden">
+              <button
+                onClick={() => { setShowMenu(false); onEdit(mission); }}
+                className="block w-full text-left px-4 py-2 hover:bg-slate-50"
+              >
+                ✏️ 編集
+              </button>
+              <button
+                onClick={() => { setShowMenu(false); onDelete(mission); }}
+                className="block w-full text-left px-4 py-2 hover:bg-red-50 text-red-600"
+              >
+                🗑 削除
+              </button>
+            </div>
+          )}
+        </div>
+
+        <div className="mt-1 space-y-2">
           {children.map(child => (
             <MissionItem
               key={child.id}
@@ -118,6 +128,65 @@ export default function MissionItem({ mission, missions, onComplete, onUncomplet
               onEdit={onEdit}
             />
           ))}
+        </div>
+      </div>
+    );
+  }
+
+  // leaf: task card
+  const indentClass = mission.depth === 0 ? 'mx-3' : mission.depth === 1 ? 'mx-4' : 'mx-5';
+
+  return (
+    <div className={`${indentClass} mb-2 bg-white rounded-xl border border-slate-100 shadow-sm p-3 flex items-center gap-3 relative`}>
+      <button
+        onClick={handleCheck}
+        className={`w-8 h-8 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-colors ${
+          isCompleted
+            ? 'bg-blue-600 border-blue-600'
+            : 'border-slate-300 bg-white'
+        } ${bouncing ? 'check-bounce' : ''}`}
+      >
+        {isCompleted && (
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" className="w-4 h-4">
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
+        )}
+      </button>
+
+      <div className="flex-1 min-w-0">
+        <div className={`font-semibold text-sm ${isCompleted ? 'line-through text-slate-400' : 'text-slate-800'}`}>
+          {mission.title}
+        </div>
+        <span className="text-xs text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full">
+          {intervalLabel}
+        </span>
+      </div>
+
+      <span className="text-blue-600 bg-blue-50 px-3 py-1 rounded-full text-sm font-medium flex-shrink-0">
+        +{mission.points} pt
+      </span>
+
+      <button
+        onClick={() => setShowMenu(s => !s)}
+        className="text-slate-400 px-1 text-sm flex-shrink-0"
+      >
+        ⋯
+      </button>
+
+      {showMenu && (
+        <div className="absolute right-2 top-10 bg-white border border-slate-200 rounded-lg shadow-lg z-20 text-sm overflow-hidden">
+          <button
+            onClick={() => { setShowMenu(false); onEdit(mission); }}
+            className="block w-full text-left px-4 py-2 hover:bg-slate-50"
+          >
+            ✏️ 編集
+          </button>
+          <button
+            onClick={() => { setShowMenu(false); onDelete(mission); }}
+            className="block w-full text-left px-4 py-2 hover:bg-red-50 text-red-600"
+          >
+            🗑 削除
+          </button>
         </div>
       )}
     </div>

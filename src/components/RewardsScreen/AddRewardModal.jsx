@@ -45,7 +45,7 @@ export default function AddRewardModal({ editing, onClose }) {
               onChange={e => setTitle(e.target.value)}
               required
               placeholder="例：ケーキを買う"
-              className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:border-yellow-400"
+              className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:border-blue-400"
             />
           </div>
           <div>
@@ -55,7 +55,7 @@ export default function AddRewardModal({ editing, onClose }) {
               value={requiredPoints}
               onChange={e => setRequiredPoints(e.target.value)}
               min={1}
-              className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:border-yellow-400"
+              className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:border-blue-400"
             />
           </div>
           <div className="flex gap-2 pt-2">
@@ -68,7 +68,7 @@ export default function AddRewardModal({ editing, onClose }) {
             </button>
             <button
               type="submit"
-              className="flex-1 py-3 bg-yellow-400 text-slate-800 font-bold rounded-xl"
+              className="flex-1 py-3 bg-blue-600 text-white font-bold rounded-xl"
             >
               {editing ? '更新' : '追加'}
             </button>

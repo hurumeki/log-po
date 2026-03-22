@@ -1,11 +1,10 @@
 import { useState } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
-import { db, getTotalPoints } from '../../db/db';
+import { db } from '../../db/db';
 import AddRewardModal from './AddRewardModal';
 
 export default function RewardsScreen() {
   const [showModal, setShowModal] = useState(false);
-  const [editingReward, setEditingReward] = useState(null);
 
   const rewards = useLiveQuery(() =>
     db.rewards.orderBy('requiredPoints').toArray(),
@@ -25,20 +24,20 @@ export default function RewardsScreen() {
 
   return (
     <div>
-      {/* Header */}
-      <div className="bg-slate-800 text-white px-4 py-4 sticky top-0 z-30">
-        <div className="text-yellow-400 text-3xl font-bold">
-          🪙 {totalPoints.toLocaleString()} pt
-        </div>
-        <div className="text-slate-400 text-sm mt-1">累計ポイント</div>
+      {/* Page title */}
+      <div className="px-4 pt-6 pb-4 flex items-center justify-between">
+        <h1 className="text-2xl font-bold text-slate-800">ご褒美リスト</h1>
+        <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm font-medium">
+          所持: {totalPoints.toLocaleString()} pt
+        </span>
       </div>
 
       {/* Rewards list */}
-      <div className="p-3 space-y-3">
+      <div className="px-3 pb-3 space-y-3">
         {rewards.length === 0 && (
           <div className="text-center text-slate-400 py-8">
             <div className="text-4xl mb-3">🎁</div>
-            <p>報酬がまだありません</p>
+            <p>ご褒美がまだありません</p>
             <p className="text-sm mt-1">右下の＋ボタンで追加しましょう！</p>
           </div>
         )}
@@ -51,16 +50,14 @@ export default function RewardsScreen() {
             <div
               key={r.id}
               className={`rounded-xl border p-4 transition-all ${
-                unlocked
-                  ? 'bg-yellow-50 border-yellow-300'
-                  : 'bg-white border-slate-200'
+                unlocked ? 'bg-yellow-50 border-yellow-300' : 'bg-white border-slate-200'
               }`}
             >
               <div className="flex items-start gap-2">
-                <span className="text-2xl">{unlocked ? '✨' : '🔒'}</span>
+                <span className="text-xl">{unlocked ? '✨' : '🔒'}</span>
                 <div className="flex-1">
                   <div className="font-bold text-slate-800">{r.title}</div>
-                  <div className="text-sm text-slate-500">
+                  <div className="text-sm text-slate-500 mt-0.5">
                     必要: {r.requiredPoints.toLocaleString()} pt
                   </div>
                   {unlocked ? (
@@ -69,16 +66,16 @@ export default function RewardsScreen() {
                     </div>
                   ) : (
                     <div className="mt-2">
-                      <div className="text-xs text-slate-400 mb-1">
-                        あと {remaining.toLocaleString()} pt
+                      <div className="flex justify-between text-xs text-blue-600 mb-1">
+                        <span>進行度 {progress}%</span>
+                        <span>あと {remaining.toLocaleString()} pt</span>
                       </div>
-                      <div className="w-full bg-slate-100 rounded-full h-2">
+                      <div className="w-full bg-slate-200 rounded-full h-1.5">
                         <div
-                          className="bg-yellow-400 h-2 rounded-full transition-all"
+                          className="bg-blue-500 h-1.5 rounded-full transition-all"
                           style={{ width: `${progress}%` }}
                         />
                       </div>
-                      <div className="text-xs text-slate-400 mt-0.5 text-right">{progress}%</div>
                     </div>
                   )}
                 </div>
@@ -96,7 +93,7 @@ export default function RewardsScreen() {
 
       {/* FAB */}
       <button
-        onClick={() => { setEditingReward(null); setShowModal(true); }}
+        onClick={() => setShowModal(true)}
         className="fixed bottom-20 right-4 w-14 h-14 bg-yellow-400 text-slate-800 rounded-full text-2xl font-bold shadow-lg flex items-center justify-center z-40"
       >
         +
@@ -104,7 +101,6 @@ export default function RewardsScreen() {
 
       {showModal && (
         <AddRewardModal
-          editing={editingReward}
           onClose={() => setShowModal(false)}
         />
       )}

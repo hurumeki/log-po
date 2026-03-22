@@ -75,7 +75,7 @@ export default function AddMissionModal({ missions, editing, onClose }) {
               onChange={e => setTitle(e.target.value)}
               required
               placeholder="例：腕立て10回"
-              className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:border-yellow-400"
+              className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:border-blue-400"
             />
           </div>
 
@@ -85,7 +85,7 @@ export default function AddMissionModal({ missions, editing, onClose }) {
               value={memo}
               onChange={e => setMemo(e.target.value)}
               rows={2}
-              className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:border-yellow-400"
+              className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:border-blue-400"
             />
           </div>
 
@@ -95,7 +95,7 @@ export default function AddMissionModal({ missions, editing, onClose }) {
               <select
                 value={parentId}
                 onChange={e => setParentId(e.target.value)}
-                className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:border-yellow-400"
+                className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:border-blue-400"
               >
                 <option value="">トップレベル</option>
                 {possibleParents.map(m => (
@@ -117,7 +117,7 @@ export default function AddMissionModal({ missions, editing, onClose }) {
                   onClick={() => setInterval(v)}
                   className={`flex-1 py-2 rounded-lg text-sm border transition-colors ${
                     interval === v
-                      ? 'bg-slate-800 text-white border-slate-800'
+                      ? 'bg-blue-600 text-white border-blue-600'
                       : 'bg-white text-slate-600 border-slate-300'
                   }`}
                 >
@@ -138,7 +138,7 @@ export default function AddMissionModal({ missions, editing, onClose }) {
                     onClick={() => setWeekday(i)}
                     className={`flex-1 py-2 rounded-lg text-sm border transition-colors ${
                       weekday === i
-                        ? 'bg-yellow-400 text-slate-800 border-yellow-400'
+                        ? 'bg-blue-600 text-white border-blue-600'
                         : 'bg-white text-slate-600 border-slate-300'
                     }`}
                   >
@@ -156,7 +156,7 @@ export default function AddMissionModal({ missions, editing, onClose }) {
               value={points}
               onChange={e => setPoints(e.target.value)}
               min={1}
-              className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:border-yellow-400"
+              className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:border-blue-400"
             />
           </div>
 
@@ -170,7 +170,7 @@ export default function AddMissionModal({ missions, editing, onClose }) {
             </button>
             <button
               type="submit"
-              className="flex-1 py-3 bg-yellow-400 text-slate-800 font-bold rounded-xl"
+              className="flex-1 py-3 bg-blue-600 text-white font-bold rounded-xl"
             >
               {editing ? '更新' : '追加'}
             </button>
