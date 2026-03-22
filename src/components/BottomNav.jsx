@@ -52,12 +52,12 @@ export default function BottomNav({ current, onChange }) {
   ];
 
   return (
-    <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md bg-white border-t border-slate-200 flex z-50">
+    <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md bg-white border-t border-slate-200 flex z-50 pb-[env(safe-area-inset-bottom)]">
       {tabs.map(t => (
         <button
           key={t.key}
           onClick={() => onChange(t.key)}
-          className={`flex-1 flex flex-col items-center py-2 gap-0.5 transition-colors ${
+          className={`flex-1 flex flex-col items-center py-2 gap-0.5 transition-colors active:bg-slate-100 ${
             current === t.key ? 'text-blue-600' : 'text-slate-400'
           }`}
         >

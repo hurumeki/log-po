@@ -1,6 +1,6 @@
 export default function PointsHeader({ totalPoints, nextReward }) {
   return (
-    <div className="bg-blue-600 text-white px-4 py-4 sticky top-0 z-30">
+    <div className="bg-blue-600 text-white px-4 py-4 pt-[max(1rem,env(safe-area-inset-top))] sticky top-0 z-30">
       <div className="text-sm text-blue-100 mb-1">現在の累計ポイント</div>
       <div className="flex items-center gap-2">
         <span className="text-3xl">🪙</span>
