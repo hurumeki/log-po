@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { db } from '../../db/db';
+import { DEPTH } from '../../constants';
 
 const WEEKDAYS = ['日', '月', '火', '水', '木', '金', '土'];
 
@@ -14,7 +15,7 @@ const PRESET_CATEGORIES = [
 export default function AddMissionModal({ missions, editing, onClose }) {
   const [title, setTitle] = useState('');
   const [memo, setMemo] = useState('');
-  const [interval, setInterval] = useState('daily');
+  const [missionInterval, setMissionInterval] = useState('daily');
   const [weekday, setWeekday] = useState(1);
   const [points, setPoints] = useState(10);
   const [categoryName, setCategoryName] = useState('');
@@ -22,16 +23,10 @@ export default function AddMissionModal({ missions, editing, onClose }) {
   const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
   const [showSubcategoryDropdown, setShowSubcategoryDropdown] = useState(false);
 
-  // Get existing categories (depth 0) and subcategories (depth 1)
-  const existingCategories = useMemo(() => {
-    if (!missions) return [];
-    return missions.filter(m => m.depth === 0 && missions.some(c => c.parentId === m.id));
-  }, [missions]);
-
-  // Also include depth-0 missions that are standalone (no children yet) as potential categories
+  // Get all categories (depth 0) including standalone ones without children
   const allCategories = useMemo(() => {
     if (!missions) return [];
-    return missions.filter(m => m.depth === 0);
+    return missions.filter(m => m.depth === DEPTH.CATEGORY);
   }, [missions]);
 
   const existingSubcategories = useMemo(() => {
@@ -39,11 +34,11 @@ export default function AddMissionModal({ missions, editing, onClose }) {
     const cat = allCategories.find(c => c.title === categoryName);
     if (!cat) return [];
     // Only include depth-1 missions that have children (actual sub-groups), not leaf tasks
-    return missions.filter(m => m.parentId === cat.id && m.depth === 1 && missions.some(c => c.parentId === m.id));
+    return missions.filter(m => m.parentId === cat.id && m.depth === DEPTH.SUBCATEGORY && missions.some(c => c.parentId === m.id));
   }, [missions, categoryName, allCategories]);
 
   // Check if editing a category/subcategory (non-leaf with children)
-  const isEditingCategory = editing && editing.depth < 2 && missions.some(m => m.parentId === editing.id);
+  const isEditingCategory = editing && editing.depth < DEPTH.TASK && missions.some(m => m.parentId === editing.id);
 
   // Prevent background scrolling while modal is open
   useEffect(() => {
@@ -55,12 +50,12 @@ export default function AddMissionModal({ missions, editing, onClose }) {
     if (editing) {
       setTitle(editing.title);
       setMemo(editing.memo || '');
-      setInterval(editing.interval);
+      setMissionInterval(editing.interval);
       setWeekday(editing.weekday ?? 1);
       setPoints(editing.points);
 
       // Resolve category and subcategory names from hierarchy
-      if (editing.depth === 2 && editing.parentId) {
+      if (editing.depth === DEPTH.TASK && editing.parentId) {
         const parent = missions.find(m => m.id === editing.parentId);
         if (parent) {
           setSubcategoryName(parent.title);
@@ -69,11 +64,11 @@ export default function AddMissionModal({ missions, editing, onClose }) {
             if (grandparent) setCategoryName(grandparent.title);
           }
         }
-      } else if (editing.depth === 1 && editing.parentId) {
+      } else if (editing.depth === DEPTH.SUBCATEGORY && editing.parentId) {
         const parent = missions.find(m => m.id === editing.parentId);
         if (parent) setCategoryName(parent.title);
         setSubcategoryName('');
-      } else if (editing.depth === 0) {
+      } else if (editing.depth === DEPTH.CATEGORY) {
         setCategoryName(editing.title);
         setSubcategoryName('');
       }
@@ -82,6 +77,7 @@ export default function AddMissionModal({ missions, editing, onClose }) {
 
   async function handleSubmit(e) {
     e.preventDefault();
+    if (!title.trim()) return;
 
     if (editing) {
       if (isEditingCategory) {
@@ -90,8 +86,8 @@ export default function AddMissionModal({ missions, editing, onClose }) {
         await db.missions.update(editing.id, {
           title: title.trim(),
           memo: memo.trim(),
-          interval,
-          weekday: interval === 'weekly' ? weekday : null,
+          interval: missionInterval,
+          weekday: missionInterval === 'weekly' ? weekday : null,
           points: Number(points),
         });
       }
@@ -111,17 +107,17 @@ export default function AddMissionModal({ missions, editing, onClose }) {
           weekday: null,
           points: 0,
           parentId: null,
-          depth: 0,
+          depth: DEPTH.CATEGORY,
           completedAt: null,
           createdAt: new Date().toISOString(),
         });
-        category = { id: catId, depth: 0 };
+        category = { id: catId, depth: DEPTH.CATEGORY };
       }
       parentId = category.id;
 
       // Find or create subcategory (depth 1)
       if (subcategoryName.trim()) {
-        const subs = missions.filter(m => m.parentId === category.id && m.depth === 1);
+        const subs = missions.filter(m => m.parentId === category.id && m.depth === DEPTH.SUBCATEGORY);
         let subcategory = subs.find(s => s.title === subcategoryName.trim());
         if (!subcategory) {
           const subId = await db.missions.add({
@@ -131,25 +127,25 @@ export default function AddMissionModal({ missions, editing, onClose }) {
             weekday: null,
             points: 0,
             parentId: category.id,
-            depth: 1,
+            depth: DEPTH.SUBCATEGORY,
             completedAt: null,
             createdAt: new Date().toISOString(),
           });
-          subcategory = { id: subId, depth: 1 };
+          subcategory = { id: subId, depth: DEPTH.SUBCATEGORY };
         }
         parentId = subcategory.id;
       }
     }
 
     const depth = parentId
-      ? (subcategoryName.trim() ? 2 : 1)
-      : 0;
+      ? (subcategoryName.trim() ? DEPTH.TASK : DEPTH.SUBCATEGORY)
+      : DEPTH.CATEGORY;
 
     await db.missions.add({
       title: title.trim(),
       memo: memo.trim(),
-      interval,
-      weekday: interval === 'weekly' ? weekday : null,
+      interval: missionInterval,
+      weekday: missionInterval === 'weekly' ? weekday : null,
       points: Number(points),
       parentId,
       depth,
@@ -169,7 +165,7 @@ export default function AddMissionModal({ missions, editing, onClose }) {
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-bold text-slate-800">
             {isEditingCategory
-              ? (editing.depth === 0 ? 'カテゴリを編集' : 'サブカテゴリを編集')
+              ? (editing.depth === DEPTH.CATEGORY ? 'カテゴリを編集' : 'サブカテゴリを編集')
               : editing ? 'ミッションを編集' : 'ミッションを追加'}
           </h2>
           <button onClick={onClose} className="text-slate-400 text-xl w-10 h-10 flex items-center justify-center">&times;</button>
@@ -181,7 +177,7 @@ export default function AddMissionModal({ missions, editing, onClose }) {
             <>
               <div>
                 <label className="text-sm font-medium text-slate-700 block mb-1">
-                  {editing.depth === 0 ? 'カテゴリ名' : 'サブカテゴリ名'}
+                  {editing.depth === DEPTH.CATEGORY ? 'カテゴリ名' : 'サブカテゴリ名'}
                 </label>
                 <input
                   type="text"
@@ -309,8 +305,8 @@ export default function AddMissionModal({ missions, editing, onClose }) {
           <div>
             <label className="text-sm font-medium text-slate-700 block mb-1">間隔 (周期)</label>
             <select
-              value={interval}
-              onChange={e => setInterval(e.target.value)}
+              value={missionInterval}
+              onChange={e => setMissionInterval(e.target.value)}
               className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm outline-none focus:border-blue-400 bg-slate-50 appearance-none"
               style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%2394a3b8'%3E%3Cpath fill-rule='evenodd' d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z' clip-rule='evenodd'/%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 0.75rem center', backgroundSize: '1.25rem' }}
             >
@@ -321,7 +317,7 @@ export default function AddMissionModal({ missions, editing, onClose }) {
           </div>
           )}
 
-          {!isEditingCategory && interval === 'weekly' && (
+          {!isEditingCategory && missionInterval === 'weekly' && (
             <div>
               <label className="text-sm font-medium text-slate-700 block mb-1">基準曜日</label>
               <div className="flex gap-1">
@@ -352,7 +348,7 @@ export default function AddMissionModal({ missions, editing, onClose }) {
               <input
                 type="number"
                 value={points}
-                onChange={e => setPoints(e.target.value)}
+                onChange={e => setPoints(Math.max(1, Number(e.target.value) || 1))}
                 min={1}
                 className="flex-1 border border-slate-200 rounded-lg px-3 py-2.5 text-sm outline-none focus:border-blue-400"
               />

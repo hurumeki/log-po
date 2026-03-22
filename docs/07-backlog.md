@@ -4,14 +4,13 @@ Features described in the spec but not yet implemented.
 
 | Feature | Priority | Notes |
 |---------|----------|-------|
-| Local notifications (reminders) | High | Service Worker + Notification API. Includes notification time setting UI |
-| Smart cancel | High | Auto-cancel remaining notifications when all dailies are completed |
 | Batch notification scheduling | Medium | Schedule several days' worth of notifications at app startup (Notification Triggers API) |
 | Mission header progress bar | Low | Visual bar showing progress to next reward |
 | Sound effects (SE) | Low | "Pocharin!" sound on task completion |
 | Fanfare sound | Low | Sound effect on reward unlock |
 | Calendar daily point totals | Low | Display point totals alongside stamps |
 | Weekly reference day change as separate mission | Low | To prevent history inconsistency |
+| Detail memo UI | Low | Memo field exists in DB schema but has no input in AddMissionModal |
 
 ---
 
@@ -25,7 +24,7 @@ Features described in the spec but not yet implemented.
 - Self-hosting fonts would be preferable for a PWA
 
 ## 9.3 Settings Screen
-- Notification settings section is unimplemented, making the screen minimal
+- Notification settings are conditionally shown only when the browser supports Notification API + Service Worker
 
 ---
 

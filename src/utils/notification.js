@@ -59,12 +59,14 @@ async function showNotificationIfNeeded(missions) {
     ? `「${examples}」が未完了です`
     : `「${examples}」など${count}件が未完了です`;
 
+  const iconPath = `${import.meta.env.BASE_URL}icons/icon-192.png`;
+
   try {
     const registration = await navigator.serviceWorker.ready;
     await registration.showNotification('ログポ: 未完了ミッション', {
       body,
-      icon: '/log-po/icons/icon-192.png',
-      badge: '/log-po/icons/icon-192.png',
+      icon: iconPath,
+      badge: iconPath,
       tag: 'logpo-daily-reminder',
       renotify: true,
     });
@@ -72,7 +74,7 @@ async function showNotificationIfNeeded(missions) {
     // Fallback to basic Notification API
     new Notification('ログポ: 未完了ミッション', {
       body,
-      icon: '/log-po/icons/icon-192.png',
+      icon: iconPath,
       tag: 'logpo-daily-reminder',
     });
   }

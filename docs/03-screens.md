@@ -23,18 +23,23 @@ Screens are switched via bottom navigation with 4 tabs (`max-w-md` = 448px, cons
 | 3-level accordion | **Implemented** | depth 0 = category / depth 1 = subcategory / depth 2 = task |
 | Completion animation | **Implemented** | `+X pt!!` popup + check bounce animation |
 | Sound effects (SE) | **Not implemented** | Spec mentions a "pocharin!" sound |
+| Smart cancel | **Implemented** | When all daily leaf missions are completed, cancel the scheduled notification |
 | FAB button | **Implemented** | Blue circular button at bottom-right |
+| Context menu (⋯) | **Implemented** | Per-item menu with Edit and Delete actions |
+| Uncomplete (undo) | **Implemented** | Tapping a completed task unchecks it, subtracts points, and removes the latest history entry |
+| Delete confirmation | **Implemented** | Leaf tasks show simple confirm; categories/subcategories show descendant task count |
+| Mission deletion | **Implemented** | Recursive deletion of mission and all descendants. History entries are preserved for calendar records |
 
 ### Mission Settings
 
 | Item | Spec | Status |
 |------|------|--------|
 | Title | Required | **Implemented** |
-| Detail memo | Optional | **Implemented** |
+| Detail memo | Optional | **Partial** (stored in DB but no UI input in modal) |
 | Interval (daily/weekly/monthly) | Required | **Implemented** |
 | Weekly reference day | Only when weekly is selected | **Implemented** |
 | Points | Default 10pt | **Implemented** |
-| Parent category | Only on creation | **Implemented** (selectable from existing missions with depth < 2) |
+| Parent category | Only on creation | **Implemented** (selectable from existing missions with depth < 2). Preset categories available: 運動・健康, 学習・勉強, 家事・生活, 仕事・キャリア, カスタム |
 
 ### Reset (Recycle) Rules
 
@@ -105,7 +110,7 @@ Reset is executed by `runResetCheck()` at app startup.
 | Data export (JSON) | **Implemented** | Downloads as `logpo-backup-YYYY-MM-DD.json`. Blue button + download icon |
 | Data import | **Implemented** | Reads JSON file to restore. Gray button + upload icon |
 | History clear | **Implemented** | With confirmation dialog. Total points are preserved. Red-outlined button + trash icon |
-| Notification settings | **Not implemented** | Toggle switch and notification time settings are not supported |
+| Notification settings | **Implemented** | Toggle switch for daily reminder + time picker. Uses Service Worker Notification API. Includes permission denied warning |
 
 ---
 

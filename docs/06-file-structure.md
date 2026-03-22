@@ -15,6 +15,7 @@ log-po/
 │   │   │   ├── MissionList.jsx      # Mission list (root fetch + empty state)
 │   │   │   ├── MissionItem.jsx      # Individual mission (recursive tree rendering)
 │   │   │   ├── AddMissionModal.jsx  # Mission add/edit modal
+│   │   │   ├── ContextMenu.jsx     # Per-item context menu (edit/delete)
 │   │   │   └── PointsHeader.jsx     # Total points header
 │   │   ├── CalendarScreen/
 │   │   │   └── CalendarScreen.jsx   # Calendar + achievement log display
@@ -24,11 +25,14 @@ log-po/
 │   │   ├── SettingsScreen/
 │   │   │   └── SettingsScreen.jsx   # Settings & data management screen
 │   │   ├── BottomNav.jsx            # Bottom navigation
+│   │   ├── ErrorBoundary.jsx        # Error boundary with reload button
 │   │   └── RewardUnlockModal.jsx    # Reward unlock celebration modal
 │   ├── db/
 │   │   └── db.js                    # Dexie DB definition + business logic
 │   ├── utils/
-│   │   └── confetti.js              # Confetti effect function
+│   │   ├── confetti.js              # Confetti effect function
+│   │   └── notification.js          # Notification scheduling & permission helpers
+│   ├── constants.js                 # Shared constants (DEPTH enum)
 │   ├── App.jsx                      # Root component
 │   ├── main.jsx                     # Entry point
 │   └── index.css                    # Global styles + animations

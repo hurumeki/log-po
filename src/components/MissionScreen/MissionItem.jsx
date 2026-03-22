@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { DEPTH } from '../../constants';
+import ContextMenu from './ContextMenu';
 
 const INTERVAL_LABELS = {
   daily: '日次',
@@ -10,7 +12,6 @@ const WEEKDAYS = ['日', '月', '火', '水', '木', '金', '土'];
 
 export default function MissionItem({ mission, missions, onComplete, onUncomplete, onDelete, onEdit }) {
   const [expanded, setExpanded] = useState(true);
-  const [showMenu, setShowMenu] = useState(false);
   const [bouncing, setBouncing] = useState(false);
 
   const children = missions.filter(m => m.parentId === mission.id);
@@ -31,61 +32,48 @@ export default function MissionItem({ mission, missions, onComplete, onUncomplet
     ? `週次:${WEEKDAYS[mission.weekday]}曜`
     : INTERVAL_LABELS[mission.interval] || '';
 
-  // Count all descendant tasks for delete confirmation
+  // Count all descendant leaf tasks for delete confirmation
   function countDescendantTasks(parentId) {
     const kids = missions.filter(m => m.parentId === parentId);
     let count = 0;
     for (const kid of kids) {
       const grandkids = missions.filter(m => m.parentId === kid.id);
-      if (grandkids.length === 0) count++; // leaf = task
+      if (grandkids.length === 0) count++;
       else count += countDescendantTasks(kid.id);
     }
     return count;
   }
 
-  // depth 0: category section header
-  if (mission.depth === 0 && !isLeaf) {
+  function handleDeleteWithConfirm() {
+    if (isLeaf) {
+      if (window.confirm(`「${mission.title}」を削除しますか？`)) onDelete(mission);
+    } else {
+      const taskCount = countDescendantTasks(mission.id);
+      const label = mission.depth === DEPTH.CATEGORY ? 'カテゴリ' : 'サブカテゴリ';
+      if (window.confirm(`「${mission.title}」を削除しますか？\n\nこの${label}内の${taskCount}件のミッションもすべて削除されます。`)) onDelete(mission);
+    }
+  }
+
+  // depth 0: category section header (uses div instead of button to avoid nested interactive elements)
+  if (mission.depth === DEPTH.CATEGORY && !isLeaf) {
     return (
       <div className="mt-2">
-        <button
+        <div
+          role="button"
+          tabIndex={0}
           onClick={() => setExpanded(e => !e)}
-          className="w-full flex items-center justify-between px-4 py-1.5 text-left hover:bg-slate-50 relative"
+          onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setExpanded(v => !v); } }}
+          className="w-full flex items-center justify-between px-4 py-1.5 text-left hover:bg-slate-50 cursor-pointer"
         >
           <span className="font-semibold text-slate-700 text-sm">{mission.title}</span>
           <div className="flex items-center gap-1">
-            <button
-              onClick={e => { e.stopPropagation(); setShowMenu(s => !s); }}
-              className="text-slate-400 px-2 py-1 text-sm min-w-[44px] min-h-[44px] flex items-center justify-center"
-            >
-              ⋯
-            </button>
+            <ContextMenu
+              onEdit={() => onEdit(mission)}
+              onDelete={handleDeleteWithConfirm}
+            />
             <span className="text-slate-400 text-xs">{expanded ? '▼' : '▶'}</span>
           </div>
-          {showMenu && (
-            <>
-              <div className="fixed inset-0 z-10" onClick={e => { e.stopPropagation(); setShowMenu(false); }} />
-              <div className="absolute right-8 top-8 bg-white border border-slate-200 rounded-lg shadow-lg z-20 text-sm overflow-hidden">
-                <button
-                  onClick={e => { e.stopPropagation(); setShowMenu(false); onEdit(mission); }}
-                  className="block w-full text-left px-4 py-2 hover:bg-slate-50"
-                >
-                  ✏️ 編集
-                </button>
-                <button
-                  onClick={e => {
-                    e.stopPropagation();
-                    setShowMenu(false);
-                    const taskCount = countDescendantTasks(mission.id);
-                    if (window.confirm(`「${mission.title}」を削除しますか？\n\nこのカテゴリ内の${taskCount}件のミッションもすべて削除されます。`)) onDelete(mission);
-                  }}
-                  className="block w-full text-left px-4 py-2 hover:bg-red-50 text-red-600"
-                >
-                  🗑 削除
-                </button>
-              </div>
-            </>
-          )}
-        </button>
+        </div>
 
         {expanded && (
           <div className="slide-down">
@@ -110,37 +98,13 @@ export default function MissionItem({ mission, missions, onComplete, onUncomplet
   if (!isLeaf) {
     return (
       <div className="mx-4 mt-0.5 mb-0.5">
-        <div className="flex items-center justify-between pl-3 py-0 border-l-2 border-blue-500 relative">
+        <div className="flex items-center justify-between pl-3 py-0 border-l-2 border-blue-500">
           <span className="font-medium text-slate-600 text-xs">{mission.title}</span>
-          <button
-            onClick={() => setShowMenu(s => !s)}
-            className="text-slate-400 px-2 py-0 text-sm min-w-[44px] min-h-[36px] flex items-center justify-center"
-          >
-            ⋯
-          </button>
-          {showMenu && (
-            <>
-              <div className="fixed inset-0 z-10" onClick={() => setShowMenu(false)} />
-              <div className="absolute right-0 top-8 bg-white border border-slate-200 rounded-lg shadow-lg z-20 text-sm overflow-hidden">
-                <button
-                  onClick={() => { setShowMenu(false); onEdit(mission); }}
-                  className="block w-full text-left px-4 py-2 hover:bg-slate-50"
-                >
-                  ✏️ 編集
-                </button>
-                <button
-                  onClick={() => {
-                    setShowMenu(false);
-                    const taskCount = countDescendantTasks(mission.id);
-                    if (window.confirm(`「${mission.title}」を削除しますか？\n\nこのサブカテゴリ内の${taskCount}件のミッションもすべて削除されます。`)) onDelete(mission);
-                  }}
-                  className="block w-full text-left px-4 py-2 hover:bg-red-50 text-red-600"
-                >
-                  🗑 削除
-                </button>
-              </div>
-            </>
-          )}
+          <ContextMenu
+            onEdit={() => onEdit(mission)}
+            onDelete={handleDeleteWithConfirm}
+            size="small"
+          />
         </div>
 
         <div className="mt-1 space-y-2">
@@ -161,10 +125,10 @@ export default function MissionItem({ mission, missions, onComplete, onUncomplet
   }
 
   // leaf: task card
-  const indentClass = mission.depth === 0 ? 'mx-3' : mission.depth === 1 ? 'mx-4' : 'mx-5';
+  const indentClass = mission.depth === DEPTH.CATEGORY ? 'mx-3' : mission.depth === DEPTH.SUBCATEGORY ? 'mx-4' : 'mx-5';
 
   return (
-    <div className={`${indentClass} mb-2 bg-white rounded-xl border border-slate-100 shadow-sm p-3 flex items-center gap-3 relative`}>
+    <div className={`${indentClass} mb-2 bg-white rounded-xl border border-slate-100 shadow-sm p-3 flex items-center gap-3`}>
       <button
         onClick={handleCheck}
         className={`w-8 h-8 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-colors ${
@@ -193,32 +157,11 @@ export default function MissionItem({ mission, missions, onComplete, onUncomplet
         +{mission.points} pt
       </span>
 
-      <button
-        onClick={() => setShowMenu(s => !s)}
-        className="text-slate-400 px-1 text-sm flex-shrink-0"
-      >
-        ⋯
-      </button>
-
-      {showMenu && (
-        <>
-          <div className="fixed inset-0 z-10" onClick={() => setShowMenu(false)} />
-          <div className="absolute right-2 top-10 bg-white border border-slate-200 rounded-lg shadow-lg z-20 text-sm overflow-hidden">
-            <button
-              onClick={() => { setShowMenu(false); onEdit(mission); }}
-              className="block w-full text-left px-4 py-2 hover:bg-slate-50"
-            >
-              ✏️ 編集
-            </button>
-            <button
-              onClick={() => { setShowMenu(false); if (window.confirm(`「${mission.title}」を削除しますか？`)) onDelete(mission); }}
-              className="block w-full text-left px-4 py-2 hover:bg-red-50 text-red-600"
-            >
-              🗑 削除
-            </button>
-          </div>
-        </>
-      )}
+      <ContextMenu
+        onEdit={() => onEdit(mission)}
+        onDelete={handleDeleteWithConfirm}
+        className="flex-shrink-0"
+      />
     </div>
   );
 }

@@ -1,32 +1,24 @@
-import { useState, useEffect, useCallback } from 'react';
-import { db, getTotalPoints, addPoints, checkRewardUnlocks, getNotificationSettings } from '../../db/db';
+import { useState, useCallback, useMemo } from 'react';
+import { db, addPoints, checkRewardUnlocks, getNotificationSettings } from '../../db/db';
 import { useLiveQuery } from 'dexie-react-hooks';
 import MissionList from './MissionList';
 import AddMissionModal from './AddMissionModal';
 import PointsHeader from './PointsHeader';
-import { cancelScheduledNotification } from '../../utils/notification';
+import { cancelScheduledNotification, scheduleNotification } from '../../utils/notification';
 
 export default function MissionScreen({ onRewardUnlocked, onPointsChanged }) {
   const [showModal, setShowModal] = useState(false);
   const [editingMission, setEditingMission] = useState(null);
-  const [totalPoints, setTotalPoints] = useState(0);
-  const [nextReward, setNextReward] = useState(null);
   const [popups, setPopups] = useState([]);
 
   const missions = useLiveQuery(() => db.missions.orderBy('id').toArray(), []);
   const rewards = useLiveQuery(() => db.rewards.orderBy('requiredPoints').toArray(), []);
+  const totalPointsRow = useLiveQuery(() => db.userData.get('totalPoints'), []);
+  const totalPoints = totalPointsRow?.value ?? 0;
 
-  useEffect(() => {
-    getTotalPoints().then(setTotalPoints);
-  }, [missions]);
-
-  useEffect(() => {
-    if (!rewards || !totalPoints) {
-      setNextReward(null);
-      return;
-    }
-    const next = rewards.find(r => !r.unlockedAt && r.requiredPoints > totalPoints);
-    setNextReward(next || null);
+  const nextReward = useMemo(() => {
+    if (!rewards) return null;
+    return rewards.find(r => !r.unlockedAt && r.requiredPoints > totalPoints) || null;
   }, [rewards, totalPoints]);
 
   const handleComplete = useCallback(async (mission) => {
@@ -59,7 +51,6 @@ export default function MissionScreen({ onRewardUnlocked, onPointsChanged }) {
 
     // Add points
     const newTotal = await addPoints(mission.points);
-    setTotalPoints(newTotal);
     onPointsChanged?.();
 
     // Show point popup
@@ -89,8 +80,7 @@ export default function MissionScreen({ onRewardUnlocked, onPointsChanged }) {
     await db.missions.update(mission.id, { completedAt: null });
 
     // Subtract points
-    const newTotal = await addPoints(-mission.points);
-    setTotalPoints(newTotal);
+    await addPoints(-mission.points);
     onPointsChanged?.();
 
     // Remove the most recent history entry for this mission
@@ -100,10 +90,16 @@ export default function MissionScreen({ onRewardUnlocked, onPointsChanged }) {
     if (historyEntries.length > 0) {
       await db.history.delete(historyEntries[0].id);
     }
+
+    // Reschedule notification since there are now incomplete tasks
+    const { enabled, time } = await getNotificationSettings();
+    if (enabled && time) {
+      scheduleNotification(() => db.missions.toArray(), time);
+    }
   }, [onPointsChanged]);
 
   const handleDelete = useCallback(async (mission) => {
-    // Delete all descendants first
+    // Delete all descendants (history entries are kept for calendar records)
     const deleteRecursive = async (id) => {
       const children = await db.missions.where('parentId').equals(id).toArray();
       for (const child of children) {
