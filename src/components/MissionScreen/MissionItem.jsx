@@ -62,25 +62,28 @@ export default function MissionItem({ mission, missions, onComplete, onUncomplet
             <span className="text-slate-400 text-xs">{expanded ? '▼' : '▶'}</span>
           </div>
           {showMenu && (
-            <div className="absolute right-8 top-8 bg-white border border-slate-200 rounded-lg shadow-lg z-20 text-sm overflow-hidden">
-              <button
-                onClick={e => { e.stopPropagation(); setShowMenu(false); onEdit(mission); }}
-                className="block w-full text-left px-4 py-2 hover:bg-slate-50"
-              >
-                ✏️ 編集
-              </button>
-              <button
-                onClick={e => {
-                  e.stopPropagation();
-                  setShowMenu(false);
-                  const taskCount = countDescendantTasks(mission.id);
-                  if (window.confirm(`「${mission.title}」を削除しますか？\n\nこのカテゴリ内の${taskCount}件のミッションもすべて削除されます。`)) onDelete(mission);
-                }}
-                className="block w-full text-left px-4 py-2 hover:bg-red-50 text-red-600"
-              >
-                🗑 削除
-              </button>
-            </div>
+            <>
+              <div className="fixed inset-0 z-10" onClick={e => { e.stopPropagation(); setShowMenu(false); }} />
+              <div className="absolute right-8 top-8 bg-white border border-slate-200 rounded-lg shadow-lg z-20 text-sm overflow-hidden">
+                <button
+                  onClick={e => { e.stopPropagation(); setShowMenu(false); onEdit(mission); }}
+                  className="block w-full text-left px-4 py-2 hover:bg-slate-50"
+                >
+                  ✏️ 編集
+                </button>
+                <button
+                  onClick={e => {
+                    e.stopPropagation();
+                    setShowMenu(false);
+                    const taskCount = countDescendantTasks(mission.id);
+                    if (window.confirm(`「${mission.title}」を削除しますか？\n\nこのカテゴリ内の${taskCount}件のミッションもすべて削除されます。`)) onDelete(mission);
+                  }}
+                  className="block w-full text-left px-4 py-2 hover:bg-red-50 text-red-600"
+                >
+                  🗑 削除
+                </button>
+              </div>
+            </>
           )}
         </button>
 
@@ -116,24 +119,27 @@ export default function MissionItem({ mission, missions, onComplete, onUncomplet
             ⋯
           </button>
           {showMenu && (
-            <div className="absolute right-0 top-8 bg-white border border-slate-200 rounded-lg shadow-lg z-20 text-sm overflow-hidden">
-              <button
-                onClick={() => { setShowMenu(false); onEdit(mission); }}
-                className="block w-full text-left px-4 py-2 hover:bg-slate-50"
-              >
-                ✏️ 編集
-              </button>
-              <button
-                onClick={() => {
-                  setShowMenu(false);
-                  const taskCount = countDescendantTasks(mission.id);
-                  if (window.confirm(`「${mission.title}」を削除しますか？\n\nこのサブカテゴリ内の${taskCount}件のミッションもすべて削除されます。`)) onDelete(mission);
-                }}
-                className="block w-full text-left px-4 py-2 hover:bg-red-50 text-red-600"
-              >
-                🗑 削除
-              </button>
-            </div>
+            <>
+              <div className="fixed inset-0 z-10" onClick={() => setShowMenu(false)} />
+              <div className="absolute right-0 top-8 bg-white border border-slate-200 rounded-lg shadow-lg z-20 text-sm overflow-hidden">
+                <button
+                  onClick={() => { setShowMenu(false); onEdit(mission); }}
+                  className="block w-full text-left px-4 py-2 hover:bg-slate-50"
+                >
+                  ✏️ 編集
+                </button>
+                <button
+                  onClick={() => {
+                    setShowMenu(false);
+                    const taskCount = countDescendantTasks(mission.id);
+                    if (window.confirm(`「${mission.title}」を削除しますか？\n\nこのサブカテゴリ内の${taskCount}件のミッションもすべて削除されます。`)) onDelete(mission);
+                  }}
+                  className="block w-full text-left px-4 py-2 hover:bg-red-50 text-red-600"
+                >
+                  🗑 削除
+                </button>
+              </div>
+            </>
           )}
         </div>
 
@@ -195,20 +201,23 @@ export default function MissionItem({ mission, missions, onComplete, onUncomplet
       </button>
 
       {showMenu && (
-        <div className="absolute right-2 top-10 bg-white border border-slate-200 rounded-lg shadow-lg z-20 text-sm overflow-hidden">
-          <button
-            onClick={() => { setShowMenu(false); onEdit(mission); }}
-            className="block w-full text-left px-4 py-2 hover:bg-slate-50"
-          >
-            ✏️ 編集
-          </button>
-          <button
-            onClick={() => { setShowMenu(false); if (window.confirm(`「${mission.title}」を削除しますか？`)) onDelete(mission); }}
-            className="block w-full text-left px-4 py-2 hover:bg-red-50 text-red-600"
-          >
-            🗑 削除
-          </button>
-        </div>
+        <>
+          <div className="fixed inset-0 z-10" onClick={() => setShowMenu(false)} />
+          <div className="absolute right-2 top-10 bg-white border border-slate-200 rounded-lg shadow-lg z-20 text-sm overflow-hidden">
+            <button
+              onClick={() => { setShowMenu(false); onEdit(mission); }}
+              className="block w-full text-left px-4 py-2 hover:bg-slate-50"
+            >
+              ✏️ 編集
+            </button>
+            <button
+              onClick={() => { setShowMenu(false); if (window.confirm(`「${mission.title}」を削除しますか？`)) onDelete(mission); }}
+              className="block w-full text-left px-4 py-2 hover:bg-red-50 text-red-600"
+            >
+              🗑 削除
+            </button>
+          </div>
+        </>
       )}
     </div>
   );
