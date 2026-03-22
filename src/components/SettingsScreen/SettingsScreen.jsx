@@ -58,18 +58,21 @@ export default function SettingsScreen() {
           <div className="p-4 space-y-3">
             <button
               onClick={handleExport}
-              className="w-full py-3 bg-slate-100 text-slate-700 rounded-xl text-sm font-medium"
+              className="w-full py-3 bg-blue-600 text-white rounded-xl text-sm font-medium active:bg-blue-700 flex items-center justify-center gap-2"
             >
+              <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4"><path d="M10 2a1 1 0 011 1v7.586l2.293-2.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L9 10.586V3a1 1 0 011-1z"/><path d="M3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"/></svg>
               全データをエクスポート (JSON)
             </button>
-            <label className="block w-full py-3 bg-slate-100 text-slate-700 rounded-xl text-sm font-medium text-center cursor-pointer">
+            <label className="w-full py-3 bg-slate-100 text-slate-700 rounded-xl text-sm font-medium cursor-pointer active:bg-slate-200 flex items-center justify-center gap-2">
+              <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4"><path d="M10 18a1 1 0 01-1-1v-7.586l-2.293 2.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 9.414V17a1 1 0 01-1 1z"/><path d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"/></svg>
               データをインポート
               <input type="file" accept=".json" onChange={handleImport} className="hidden" />
             </label>
             <button
               onClick={() => setShowClearConfirm(true)}
-              className="w-full py-3 border border-red-400 text-red-500 rounded-xl text-sm font-medium"
+              className="w-full py-3 border border-red-400 text-red-500 rounded-xl text-sm font-medium active:bg-red-50 flex items-center justify-center gap-2"
             >
+              <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4"><path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd"/></svg>
               履歴の消去 (ポイント維持)
             </button>
           </div>
@@ -104,8 +107,10 @@ export default function SettingsScreen() {
 
       {/* Toast message */}
       {message && (
-        <div className="fixed bottom-24 left-1/2 -translate-x-1/2 bg-slate-700 text-white px-5 py-2 rounded-full text-sm z-50 flex items-center gap-2">
-          <span>{message}</span>
+        <div className="fixed bottom-24 left-1/2 -translate-x-1/2 w-full max-w-md pointer-events-none z-50 flex justify-center">
+          <div className="bg-slate-700 text-white px-5 py-2 rounded-full text-sm flex items-center gap-2 pointer-events-auto">
+            <span>{message}</span>
+          </div>
         </div>
       )}
     </div>
