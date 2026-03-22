@@ -103,6 +103,7 @@ export default function MissionItem({ mission, missions, onComplete, onUncomplet
           <ContextMenu
             onEdit={() => onEdit(mission)}
             onDelete={handleDeleteWithConfirm}
+            size="small"
           />
         </div>
 

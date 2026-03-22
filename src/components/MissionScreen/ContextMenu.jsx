@@ -1,13 +1,17 @@
 import { useState } from 'react';
 
-export default function ContextMenu({ onEdit, onDelete, className = '' }) {
+export default function ContextMenu({ onEdit, onDelete, className = '', size = 'default' }) {
   const [open, setOpen] = useState(false);
+
+  const sizeClass = size === 'small'
+    ? 'min-w-[44px] min-h-[36px] py-0'
+    : 'min-w-[44px] min-h-[44px] py-1';
 
   return (
     <div className={`relative ${className}`}>
       <button
         onClick={e => { e.stopPropagation(); setOpen(s => !s); }}
-        className="text-slate-400 px-2 py-1 text-sm min-w-[44px] min-h-[44px] flex items-center justify-center"
+        className={`text-slate-400 px-2 text-sm flex items-center justify-center ${sizeClass}`}
       >
         ⋯
       </button>
