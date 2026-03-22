@@ -33,7 +33,7 @@ export default function RewardsScreen() {
       </div>
 
       {/* Rewards list */}
-      <div className="px-3 pb-3 space-y-3">
+      <div className="px-3 pb-20 space-y-3">
         {rewards.length === 0 && (
           <div className="text-center text-slate-400 py-8">
             <div className="text-4xl mb-3">🎁</div>
