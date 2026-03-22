@@ -23,3 +23,11 @@ npm run build && npx playwright test e2e/ui-review.spec.js
 - **P1**: タッチターゲット不足（44x44px未満）、コントラスト不足
 - **P2**: 完了状態のフィードバック不足、レイアウト崩れ
 - **P3**: スペーシング、フォント一貫性
+
+## Playwright 利用ルール
+
+- **ブラウザとPlaywrightのバージョン確認・再インストールは行わないこと**
+  - SessionStart フックで `npx playwright install --with-deps chromium` が自動実行されるため、手動での確認・インストールは不要
+- Playwright の実行は **必ずプロジェクトルートから `npx playwright test`** を使うこと（グローバルインストールや `playwright` コマンド直接実行は禁止）
+- `npx playwright install` を手動で実行しないこと（SessionStart フックに任せる）
+- ブラウザは **Chromium のみ** 使用する（Firefox・WebKit は不要）
