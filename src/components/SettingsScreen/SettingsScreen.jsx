@@ -109,13 +109,13 @@ export default function SettingsScreen() {
                 </div>
                 <button
                   onClick={() => handleToggleNotification(!notifEnabled)}
-                  className={`relative w-12 h-7 rounded-full transition-colors flex-shrink-0 ${
+                  className={`relative inline-flex items-center w-12 h-7 rounded-full transition-colors flex-shrink-0 ${
                     notifEnabled ? 'bg-blue-600' : 'bg-slate-300'
                   }`}
                 >
                   <span
-                    className={`absolute top-0.5 w-6 h-6 bg-white rounded-full shadow transition-transform ${
-                      notifEnabled ? 'translate-x-5' : 'translate-x-0.5'
+                    className={`inline-block w-5 h-5 bg-white rounded-full shadow transition-transform ${
+                      notifEnabled ? 'translate-x-6' : 'translate-x-1'
                     }`}
                   />
                 </button>
