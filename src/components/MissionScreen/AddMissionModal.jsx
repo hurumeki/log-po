@@ -300,6 +300,20 @@ export default function AddMissionModal({ missions, editing, onClose }) {
           </div>
           )}
 
+          {/* Memo */}
+          {!isEditingCategory && (
+          <div>
+            <label className="text-sm font-medium text-slate-700 block mb-1">詳細メモ</label>
+            <textarea
+              value={memo}
+              onChange={e => setMemo(e.target.value)}
+              placeholder="例: 毎朝起きたらすぐやる"
+              rows={2}
+              className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm outline-none focus:border-blue-400 resize-none"
+            />
+          </div>
+          )}
+
           {/* Interval */}
           {!isEditingCategory && (
           <div>

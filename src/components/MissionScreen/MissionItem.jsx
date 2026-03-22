@@ -148,6 +148,11 @@ export default function MissionItem({ mission, missions, onComplete, onUncomplet
         <div className={`font-semibold text-sm ${isCompleted ? 'line-through text-slate-400' : 'text-slate-800'}`}>
           {mission.title}
         </div>
+        {mission.memo && (
+          <div className={`text-xs mt-0.5 ${isCompleted ? 'text-slate-400' : 'text-slate-500'}`}>
+            {mission.memo}
+          </div>
+        )}
         <span className={`text-xs px-2 py-0.5 rounded-full ${isCompleted ? 'text-slate-400 bg-slate-100' : 'text-blue-600 bg-blue-50'}`}>
           {intervalLabel}
         </span>

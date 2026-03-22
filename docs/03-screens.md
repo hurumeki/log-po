@@ -35,7 +35,7 @@ Screens are switched via bottom navigation with 4 tabs (`max-w-md` = 448px, cons
 | Item | Spec | Status |
 |------|------|--------|
 | Title | Required | **Implemented** |
-| Detail memo | Optional | **Partial** (stored in DB but no UI input in modal) |
+| Detail memo | Optional | **Implemented** (textarea in add/edit modal, displayed on task card) |
 | Interval (daily/weekly/monthly) | Required | **Implemented** |
 | Weekly reference day | Only when weekly is selected | **Implemented** |
 | Points | Default 10pt | **Implemented** |
