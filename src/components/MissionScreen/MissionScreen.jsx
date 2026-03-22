@@ -99,13 +99,12 @@ export default function MissionScreen({ onRewardUnlocked, onPointsChanged }) {
   }, [onPointsChanged]);
 
   const handleDelete = useCallback(async (mission) => {
-    // Delete all descendants and their history entries
+    // Delete all descendants (history entries are kept for calendar records)
     const deleteRecursive = async (id) => {
       const children = await db.missions.where('parentId').equals(id).toArray();
       for (const child of children) {
         await deleteRecursive(child.id);
       }
-      await db.history.where('missionId').equals(id).delete();
       await db.missions.delete(id);
     };
     await deleteRecursive(mission.id);
