@@ -1,13 +1,57 @@
-import { useState } from 'react';
-import { exportAllData, importAllData, clearHistory } from '../../db/db';
+import { useState, useEffect } from 'react';
+import { exportAllData, importAllData, clearHistory, getNotificationSettings, setNotificationEnabled, setNotificationTime } from '../../db/db';
+import { isNotificationSupported, requestPermission, getPermissionStatus, scheduleNotification, cancelScheduledNotification } from '../../utils/notification';
+import { db } from '../../db/db';
 
 export default function SettingsScreen() {
   const [showClearConfirm, setShowClearConfirm] = useState(false);
   const [message, setMessage] = useState('');
+  const [notifEnabled, setNotifEnabled] = useState(false);
+  const [notifTime, setNotifTime] = useState('21:00');
+  const [permissionStatus, setPermissionStatus] = useState('default');
+  const [notifSupported] = useState(isNotificationSupported);
+
+  useEffect(() => {
+    getNotificationSettings().then(({ enabled, time }) => {
+      setNotifEnabled(enabled);
+      setNotifTime(time);
+    });
+    if (notifSupported) {
+      setPermissionStatus(getPermissionStatus());
+    }
+  }, [notifSupported]);
 
   function showMessage(msg) {
     setMessage(msg);
     setTimeout(() => setMessage(''), 3000);
+  }
+
+  async function handleToggleNotification(enabled) {
+    if (enabled) {
+      const result = await requestPermission();
+      setPermissionStatus(result);
+      if (result !== 'granted') {
+        showMessage('通知の許可が必要です');
+        return;
+      }
+      await setNotificationEnabled(true);
+      setNotifEnabled(true);
+      scheduleNotification(() => db.missions.toArray(), notifTime);
+      showMessage('通知をオンにしました');
+    } else {
+      await setNotificationEnabled(false);
+      setNotifEnabled(false);
+      cancelScheduledNotification();
+      showMessage('通知をオフにしました');
+    }
+  }
+
+  async function handleTimeChange(time) {
+    setNotifTime(time);
+    await setNotificationTime(time);
+    if (notifEnabled) {
+      scheduleNotification(() => db.missions.toArray(), time);
+    }
   }
 
   async function handleExport() {
@@ -50,6 +94,56 @@ export default function SettingsScreen() {
       </div>
 
       <div className="px-4 space-y-3">
+        {/* Notification settings card */}
+        {notifSupported && (
+          <section className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+            <div className="px-4 py-3 border-b border-slate-100">
+              <h2 className="text-sm font-medium text-slate-500">通知設定</h2>
+            </div>
+            <div className="p-4 space-y-4">
+              {/* Toggle */}
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="text-sm font-medium text-slate-700">未完了リマインダー</div>
+                  <div className="text-xs text-slate-400 mt-0.5">指定時刻に未完了ミッションを通知</div>
+                </div>
+                <button
+                  onClick={() => handleToggleNotification(!notifEnabled)}
+                  className={`relative w-12 h-7 rounded-full transition-colors flex-shrink-0 ${
+                    notifEnabled ? 'bg-blue-600' : 'bg-slate-300'
+                  }`}
+                >
+                  <span
+                    className={`absolute top-0.5 w-6 h-6 bg-white rounded-full shadow transition-transform ${
+                      notifEnabled ? 'translate-x-5' : 'translate-x-0.5'
+                    }`}
+                  />
+                </button>
+              </div>
+
+              {/* Time picker */}
+              {notifEnabled && (
+                <div className="flex items-center justify-between">
+                  <div className="text-sm text-slate-700">通知時刻</div>
+                  <input
+                    type="time"
+                    value={notifTime}
+                    onChange={e => handleTimeChange(e.target.value)}
+                    className="border border-slate-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-blue-400"
+                  />
+                </div>
+              )}
+
+              {/* Permission denied warning */}
+              {permissionStatus === 'denied' && (
+                <p className="text-xs text-red-500">
+                  通知がブロックされています。ブラウザの設定から通知を許可してください。
+                </p>
+              )}
+            </div>
+          </section>
+        )}
+
         {/* Data management card */}
         <section className="bg-white rounded-xl border border-slate-200 overflow-hidden">
           <div className="px-4 py-3 border-b border-slate-100">
