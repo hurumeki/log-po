@@ -41,6 +41,9 @@ export default function AddMissionModal({ missions, editing, onClose }) {
     return missions.filter(m => m.parentId === cat.id && m.depth === 1);
   }, [missions, categoryName, allCategories]);
 
+  // Check if editing a category/subcategory (non-leaf with children)
+  const isEditingCategory = editing && editing.depth < 2 && missions.some(m => m.parentId === editing.id);
+
   useEffect(() => {
     if (editing) {
       setTitle(editing.title);
@@ -74,13 +77,17 @@ export default function AddMissionModal({ missions, editing, onClose }) {
     e.preventDefault();
 
     if (editing) {
-      await db.missions.update(editing.id, {
-        title: title.trim(),
-        memo: memo.trim(),
-        interval,
-        weekday: interval === 'weekly' ? weekday : null,
-        points: Number(points),
-      });
+      if (isEditingCategory) {
+        await db.missions.update(editing.id, { title: title.trim() });
+      } else {
+        await db.missions.update(editing.id, {
+          title: title.trim(),
+          memo: memo.trim(),
+          interval,
+          weekday: interval === 'weekly' ? weekday : null,
+          points: Number(points),
+        });
+      }
       onClose();
       return;
     }
@@ -153,14 +160,49 @@ export default function AddMissionModal({ missions, editing, onClose }) {
       >
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-bold text-slate-800">
-            {editing ? 'ミッションを編集' : 'ミッションを追加'}
+            {isEditingCategory
+              ? (editing.depth === 0 ? 'カテゴリを編集' : 'サブカテゴリを編集')
+              : editing ? 'ミッションを編集' : 'ミッションを追加'}
           </h2>
           <button onClick={onClose} className="text-slate-400 text-xl w-10 h-10 flex items-center justify-center">&times;</button>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Category-only edit: just the name */}
+          {isEditingCategory && (
+            <>
+              <div>
+                <label className="text-sm font-medium text-slate-700 block mb-1">
+                  {editing.depth === 0 ? 'カテゴリ名' : 'サブカテゴリ名'}
+                </label>
+                <input
+                  type="text"
+                  value={title}
+                  onChange={e => setTitle(e.target.value)}
+                  required
+                  className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm outline-none focus:border-blue-400"
+                />
+              </div>
+              <div className="flex gap-2 pt-2">
+                <button
+                  type="button"
+                  onClick={onClose}
+                  className="flex-1 py-3 border border-slate-300 rounded-xl text-slate-600"
+                >
+                  キャンセル
+                </button>
+                <button
+                  type="submit"
+                  className="flex-1 py-3 bg-blue-600 text-white font-bold rounded-xl"
+                >
+                  更新
+                </button>
+              </div>
+            </>
+          )}
+
           {/* Category */}
-          {!editing && (
+          {!editing && !isEditingCategory && (
             <div className="relative">
               <label className="text-sm font-medium text-slate-700 block mb-1">カテゴリ (大項目)</label>
               <input
@@ -207,7 +249,7 @@ export default function AddMissionModal({ missions, editing, onClose }) {
           )}
 
           {/* Subcategory */}
-          {!editing && categoryName.trim() && (
+          {!editing && !isEditingCategory && categoryName.trim() && (
             <div className="relative">
               <label className="text-sm font-medium text-slate-700 block mb-1">サブカテゴリ (中項目)</label>
               <input
@@ -240,6 +282,7 @@ export default function AddMissionModal({ missions, editing, onClose }) {
           )}
 
           {/* Task name */}
+          {!isEditingCategory && (
           <div>
             <label className="text-sm font-medium text-slate-700 block mb-1">タスク名 (ミッションの内容) *</label>
             <input
@@ -251,8 +294,10 @@ export default function AddMissionModal({ missions, editing, onClose }) {
               className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm outline-none focus:border-blue-400"
             />
           </div>
+          )}
 
           {/* Interval */}
+          {!isEditingCategory && (
           <div>
             <label className="text-sm font-medium text-slate-700 block mb-1">間隔 (周期)</label>
             <select
@@ -266,8 +311,9 @@ export default function AddMissionModal({ missions, editing, onClose }) {
               <option value="monthly">月次 (毎月)</option>
             </select>
           </div>
+          )}
 
-          {interval === 'weekly' && (
+          {!isEditingCategory && interval === 'weekly' && (
             <div>
               <label className="text-sm font-medium text-slate-700 block mb-1">基準曜日</label>
               <div className="flex gap-1">
@@ -290,6 +336,7 @@ export default function AddMissionModal({ missions, editing, onClose }) {
           )}
 
           {/* Points */}
+          {!isEditingCategory && (
           <div>
             <label className="text-sm font-medium text-slate-700 block mb-1">獲得ポイント</label>
             <div className="flex items-center gap-2">
@@ -304,7 +351,9 @@ export default function AddMissionModal({ missions, editing, onClose }) {
               <span className="text-sm text-slate-500 font-medium">pt</span>
             </div>
           </div>
+          )}
 
+          {!isEditingCategory && (
           <div className="flex gap-2 pt-2">
             <button
               type="button"
@@ -320,6 +369,7 @@ export default function AddMissionModal({ missions, editing, onClose }) {
               {editing ? '更新' : '追加'}
             </button>
           </div>
+          )}
         </form>
       </div>
     </div>
