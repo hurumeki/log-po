@@ -57,9 +57,9 @@ export default function CalendarScreen() {
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold text-slate-800">達成カレンダー</h1>
           <div className="flex items-center gap-1 text-slate-600">
-            <button onClick={prevMonth} className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-slate-100 text-lg">‹</button>
+            <button onClick={prevMonth} className="w-11 h-11 flex items-center justify-center rounded-full hover:bg-slate-100 active:bg-slate-200 text-lg">‹</button>
             <span className="text-sm font-medium">{year}年{MONTH_NAMES[month]}</span>
-            <button onClick={nextMonth} className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-slate-100 text-lg">›</button>
+            <button onClick={nextMonth} className="w-11 h-11 flex items-center justify-center rounded-full hover:bg-slate-100 active:bg-slate-200 text-lg">›</button>
           </div>
         </div>
       </div>

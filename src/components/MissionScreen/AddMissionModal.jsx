@@ -58,9 +58,9 @@ export default function AddMissionModal({ missions, editing, onClose }) {
   }
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-end z-50" onClick={onClose}>
+    <div className="fixed inset-0 bg-black/50 flex items-end z-[60]" onClick={onClose}>
       <div
-        className="bg-white w-full rounded-t-2xl p-4 max-w-md mx-auto max-h-[90vh] overflow-y-auto"
+        className="bg-white w-full rounded-t-2xl p-4 pb-[max(1rem,env(safe-area-inset-bottom))] max-w-md mx-auto max-h-[90vh] overflow-y-auto"
         onClick={e => e.stopPropagation()}
       >
         <h2 className="text-lg font-bold text-slate-800 mb-4">

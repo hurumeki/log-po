@@ -80,8 +80,10 @@ export default function RewardsScreen() {
                   )}
                 </div>
                 <button
-                  onClick={() => handleDelete(r)}
-                  className="text-slate-300 hover:text-red-400 text-lg"
+                  onClick={() => {
+                    if (window.confirm(`「${r.title}」を削除しますか？`)) handleDelete(r);
+                  }}
+                  className="text-slate-400 hover:text-red-400 active:text-red-500 text-lg min-w-[44px] min-h-[44px] flex items-center justify-center -mr-2"
                 >
                   ×
                 </button>
