@@ -1,14 +1,26 @@
 export default function PointsHeader({ totalPoints, nextReward }) {
+  const progress = nextReward
+    ? Math.min(100, Math.round((totalPoints / nextReward.requiredPoints) * 100))
+    : 0;
+
   return (
-    <div className="bg-blue-600 text-white px-4 py-4 pt-[max(1rem,env(safe-area-inset-top))] sticky top-0 z-30">
-      <div className="text-sm text-blue-100 mb-1">現在の累計ポイント</div>
+    <div className="bg-gradient-to-r from-indigo-600 to-purple-500 text-white px-4 py-5 pt-[max(1.25rem,env(safe-area-inset-top))] sticky top-0 z-30 rounded-b-2xl">
+      <div className="text-sm text-indigo-100 mb-1">現在の累計ポイント</div>
       <div className="flex items-center gap-2">
-        <span className="text-3xl">🪙</span>
-        <span className="text-3xl font-bold">{totalPoints.toLocaleString()} pt</span>
+        <span className="text-4xl">🪙</span>
+        <span className="text-3xl font-bold tracking-tight">{totalPoints.toLocaleString()} pt</span>
       </div>
       {nextReward && (
-        <div className="mt-1 text-xs text-blue-100">
-          次の目標: 「{nextReward.title}」まであと{(nextReward.requiredPoints - totalPoints).toLocaleString()}pt
+        <div className="mt-2">
+          <div className="text-xs text-indigo-100 mb-1">
+            次の目標: 「{nextReward.title}」まであと{(nextReward.requiredPoints - totalPoints).toLocaleString()}pt
+          </div>
+          <div className="w-full bg-white/20 rounded-full h-2">
+            <div
+              className="bg-amber-400 h-2 rounded-full transition-all"
+              style={{ width: `${progress}%` }}
+            />
+          </div>
         </div>
       )}
     </div>

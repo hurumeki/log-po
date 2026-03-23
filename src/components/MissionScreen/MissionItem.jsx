@@ -9,6 +9,12 @@ const INTERVAL_LABELS = {
   monthly: '月次',
 };
 
+const INTERVAL_COLORS = {
+  daily: 'text-sky-600 bg-sky-50',
+  weekly: 'text-violet-600 bg-violet-50',
+  monthly: 'text-amber-700 bg-amber-50',
+};
+
 const WEEKDAYS = ['日', '月', '火', '水', '木', '金', '土'];
 
 export default function MissionItem({ mission, missions, onComplete, onUncomplete, onDelete, onEdit }) {
@@ -96,11 +102,11 @@ export default function MissionItem({ mission, missions, onComplete, onUncomplet
     );
   }
 
-  // depth 1: sub-group header with left blue border
+  // depth 1: sub-group header with left indigo border
   if (!isLeaf) {
     return (
       <div className="mx-4 mt-0.5 mb-0.5">
-        <div className="flex items-center justify-between pl-3 py-0 border-l-2 border-blue-500">
+        <div className="flex items-center justify-between pl-3 py-0 border-l-2 border-indigo-400">
           <span className="font-medium text-slate-600 text-xs">{mission.title}</span>
           <ContextMenu
             onEdit={() => onEdit(mission)}
@@ -130,12 +136,12 @@ export default function MissionItem({ mission, missions, onComplete, onUncomplet
   const indentClass = mission.depth === DEPTH.CATEGORY ? 'mx-3' : mission.depth === DEPTH.SUBCATEGORY ? 'mx-4' : 'mx-5';
 
   return (
-    <div className={`${indentClass} mb-2 bg-white rounded-xl border border-slate-100 shadow-sm p-3 flex items-center gap-3`}>
+    <div className={`${indentClass} mb-2 ${isCompleted ? 'bg-emerald-50/50' : 'bg-white'} rounded-xl shadow-md shadow-slate-200/50 p-3 flex items-center gap-3`}>
       <button
         onClick={handleCheck}
         className={`w-8 h-8 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-colors ${
           isCompleted
-            ? 'bg-blue-600 border-blue-600'
+            ? 'bg-emerald-500 border-emerald-500'
             : 'border-slate-300 bg-white'
         } ${bouncing ? 'check-bounce' : ''}`}
       >
@@ -155,12 +161,12 @@ export default function MissionItem({ mission, missions, onComplete, onUncomplet
             {mission.memo}
           </div>
         )}
-        <span className={`text-xs px-2 py-0.5 rounded-full ${isCompleted ? 'text-slate-400 bg-slate-100' : 'text-blue-600 bg-blue-50'}`}>
+        <span className={`text-xs px-2 py-0.5 rounded-full ${isCompleted ? 'text-slate-400 bg-slate-100' : INTERVAL_COLORS[mission.interval] || 'text-sky-600 bg-sky-50'}`}>
           {intervalLabel}
         </span>
       </div>
 
-      <span className={`px-3 py-1 rounded-full text-sm font-medium flex-shrink-0 ${isCompleted ? 'text-slate-400 bg-slate-100' : 'text-blue-600 bg-blue-50'}`}>
+      <span className={`px-3 py-1 rounded-full text-sm font-medium flex-shrink-0 ${isCompleted ? 'text-slate-400 bg-slate-100' : 'text-amber-700 bg-amber-50'}`}>
         +{mission.points} pt
       </span>
 

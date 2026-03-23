@@ -7,9 +7,9 @@ export default function MissionList({ missions, onComplete, onUncomplete, onDele
   if (roots.length === 0) {
     return (
       <div className="p-8 text-center text-slate-400">
-        <div className="text-4xl mb-3">🎯</div>
-        <p>ミッションがまだありません</p>
-        <p className="text-sm mt-1">右下の＋ボタンで追加しましょう！</p>
+        <div className="text-5xl mb-4">🎯</div>
+        <p className="text-slate-500">ミッションがまだありません</p>
+        <p className="text-sm mt-1 text-slate-500">右下の＋ボタンで追加しましょう！</p>
       </div>
     );
   }

@@ -4,17 +4,22 @@
 
 | Item | Value | Notes |
 |------|-------|-------|
-| Main Color | `#1E293B` (Log Navy) | Trust and record imagery |
-| Accent Color | `#FACC15` (Po Yellow) | Shining points and excitement |
+| Primary Color | `#4F46E5` → `#A855F7` (Indigo-600 → Purple-500 gradient) | Warm, game-like feel |
+| Accent Color | `#F59E0B` (Amber-500) | Gold = points and treasure metaphor |
+| Success Color | `#10B981` (Emerald-500) | Green checkmarks for completion |
 | Font | Noto Sans JP (400/500/700) | Loaded from Google Fonts CDN |
-| Background | `#F8FAFC` (slate-50) | — |
+| Background | `#FFFBF5` (warm off-white) | Warm, welcoming base |
 | Text Color | `#1E293B` (slate-800) | — |
+| Card Style | White with warm shadow (`shadow-md shadow-slate-200/50`) | No borders, softer feel |
+| Interval Badges | Sky (daily), Violet (weekly), Amber (monthly) | Color-coded for quick recognition |
 
 ### Current Implementation Status
 
 | Item | Status | Notes |
 |------|--------|-------|
-| Main Color | **Partially different** | Implementation uses `#3B82F6` (blue-500) heavily for accents. Navy is only used as theme color |
-| Accent Color | **Partially used** | Yellow used in Rewards screen FAB button and unlocked cards |
+| Primary Color | **Implemented** | Indigo-to-purple gradient used in header, FAB, nav active state |
+| Accent Color | **Implemented** | Amber/gold used for points badges, progress bars, reward cards |
+| Success Color | **Implemented** | Emerald-500 used for completion checkmarks and completed card tint |
 | Font | **Implemented** | Noto Sans JP + fallbacks (Hiragino, Meiryo, etc.) |
-| Rounded font | **Not implemented** | Spec mentions "friendly rounded sans-serif" but Noto Sans JP was adopted |
+| Card Style | **Implemented** | Shadow-based cards without borders across all screens |
+| Interval Badges | **Implemented** | Sky/violet/amber color coding for daily/weekly/monthly |
