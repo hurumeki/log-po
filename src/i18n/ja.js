@@ -93,6 +93,8 @@ const ja = {
   contextMenu: {
     edit: '✏️ 編集',
     delete: '🗑 削除',
+    moveUp: '⬆ 上へ移動',
+    moveDown: '⬇ 下へ移動',
   },
 
   // Calendar screen

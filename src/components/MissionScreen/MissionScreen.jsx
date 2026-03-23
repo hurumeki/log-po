@@ -1,5 +1,5 @@
 import { useState, useCallback, useMemo } from 'react';
-import { db, addPoints, checkRewardUnlocks, getNotificationSettings } from '../../db/db';
+import { db, addPoints, checkRewardUnlocks, getNotificationSettings, swapMissionOrder } from '../../db/db';
 import { useLiveQuery } from 'dexie-react-hooks';
 import MissionList from './MissionList';
 import AddMissionModal from './AddMissionModal';
@@ -13,7 +13,7 @@ export default function MissionScreen({ onRewardUnlocked, onPointsChanged }) {
   const [editingMission, setEditingMission] = useState(null);
   const [popups, setPopups] = useState([]);
 
-  const missions = useLiveQuery(() => db.missions.orderBy('id').toArray(), []);
+  const missions = useLiveQuery(() => db.missions.orderBy('sortOrder').toArray(), []);
   const rewards = useLiveQuery(() => db.rewards.orderBy('requiredPoints').toArray(), []);
   const totalPointsRow = useLiveQuery(() => db.userData.get('totalPoints'), []);
   const totalPoints = totalPointsRow?.value ?? 0;
@@ -112,6 +112,17 @@ export default function MissionScreen({ onRewardUnlocked, onPointsChanged }) {
     await deleteRecursive(mission.id);
   }, []);
 
+  const handleMove = useCallback(async (mission, direction) => {
+    if (!missions) return;
+    const siblings = missions
+      .filter(m => m.parentId === mission.parentId)
+      .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0));
+    const idx = siblings.findIndex(s => s.id === mission.id);
+    const swapIdx = direction === 'up' ? idx - 1 : idx + 1;
+    if (swapIdx < 0 || swapIdx >= siblings.length) return;
+    await swapMissionOrder(mission.id, siblings[swapIdx].id);
+  }, [missions]);
+
   if (!missions) return <div className="p-4 text-center text-slate-500">{t.common.loading}</div>;
 
   return (
@@ -123,6 +134,7 @@ export default function MissionScreen({ onRewardUnlocked, onPointsChanged }) {
         onUncomplete={handleUncomplete}
         onDelete={handleDelete}
         onEdit={(m) => { setEditingMission(m); setShowModal(true); }}
+        onMove={handleMove}
       />
 
       {/* FAB */}

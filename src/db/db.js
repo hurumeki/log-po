@@ -9,6 +9,17 @@ db.version(1).stores({
   userData: 'key',
 });
 
+db.version(2).stores({
+  missions: '++id, parentId, depth, interval, weekday, sortOrder',
+  history: '++id, missionId, achievedAt',
+  rewards: '++id, requiredPoints',
+  userData: 'key',
+}).upgrade(tx => {
+  return tx.table('missions').toCollection().modify((mission) => {
+    mission.sortOrder = mission.id;
+  });
+});
+
 // -------- UserData helpers --------
 export async function getUserData(key, defaultValue = null) {
   const row = await db.userData.get(key);
@@ -154,4 +165,26 @@ export async function importAllData(data) {
 
 export async function clearHistory() {
   await db.history.clear();
+}
+
+// -------- Mission Reorder --------
+export async function swapMissionOrder(missionId1, missionId2) {
+  await db.transaction('rw', db.missions, async () => {
+    const m1 = await db.missions.get(missionId1);
+    const m2 = await db.missions.get(missionId2);
+    if (!m1 || !m2) return;
+    await db.missions.update(missionId1, { sortOrder: m2.sortOrder });
+    await db.missions.update(missionId2, { sortOrder: m1.sortOrder });
+  });
+}
+
+export async function getNextSortOrder(parentId) {
+  let siblings;
+  if (parentId == null) {
+    siblings = await db.missions.filter(m => m.parentId == null).toArray();
+  } else {
+    siblings = await db.missions.where('parentId').equals(parentId).toArray();
+  }
+  if (siblings.length === 0) return 1;
+  return Math.max(...siblings.map(s => s.sortOrder ?? 0)) + 1;
 }

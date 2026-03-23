@@ -1,7 +1,7 @@
 import MissionItem from './MissionItem';
 import { useLanguage } from '../../i18n/LanguageContext';
 
-export default function MissionList({ missions, onComplete, onUncomplete, onDelete, onEdit }) {
+export default function MissionList({ missions, onComplete, onUncomplete, onDelete, onEdit, onMove }) {
   const { t } = useLanguage();
   // Build tree
   const roots = missions.filter(m => !m.parentId);
@@ -27,6 +27,7 @@ export default function MissionList({ missions, onComplete, onUncomplete, onDele
           onUncomplete={onUncomplete}
           onDelete={onDelete}
           onEdit={onEdit}
+          onMove={onMove}
         />
       ))}
     </div>
