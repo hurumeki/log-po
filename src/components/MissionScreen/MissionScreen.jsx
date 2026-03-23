@@ -124,10 +124,10 @@ export default function MissionScreen({ onRewardUnlocked, onPointsChanged }) {
       />
 
       {/* FAB */}
-      <div className="fixed bottom-20 left-1/2 -translate-x-1/2 w-full max-w-md pointer-events-none z-40">
+      <div className="fixed bottom-24 left-1/2 -translate-x-1/2 w-full max-w-md pointer-events-none z-40">
         <button
           onClick={() => { setEditingMission(null); setShowModal(true); }}
-          className="absolute bottom-0 right-4 w-14 h-14 bg-blue-600 text-white rounded-full text-2xl font-bold shadow-lg flex items-center justify-center pointer-events-auto"
+          className="absolute bottom-0 right-4 w-14 h-14 bg-gradient-to-r from-indigo-600 to-purple-500 text-white rounded-full text-2xl font-bold shadow-lg shadow-indigo-500/30 flex items-center justify-center pointer-events-auto"
         >
           +
         </button>
@@ -137,7 +137,7 @@ export default function MissionScreen({ onRewardUnlocked, onPointsChanged }) {
       {popups.map(p => (
         <div
           key={p.id}
-          className="fixed top-1/3 left-1/2 -translate-x-1/2 point-pop text-yellow-400 text-2xl font-bold pointer-events-none z-50"
+          className="fixed top-1/3 left-1/2 -translate-x-1/2 point-pop text-yellow-400 text-2xl font-bold pointer-events-none z-50 drop-shadow-lg"
         >
           +{p.pts}pt!!
         </div>

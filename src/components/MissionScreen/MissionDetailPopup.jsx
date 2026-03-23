@@ -11,7 +11,7 @@ function LinkifiedText({ text }) {
         href={part}
         target="_blank"
         rel="noopener noreferrer"
-        className="text-blue-600 underline break-all"
+        className="text-indigo-600 underline break-all"
         onClick={e => e.stopPropagation()}
       >
         {part}
@@ -53,8 +53,12 @@ export default function MissionDetailPopup({ mission, onClose }) {
 
         <div className="space-y-3">
           <div className="flex items-center gap-2 text-sm text-slate-600">
-            <span className="px-2 py-0.5 rounded-full bg-blue-50 text-blue-600 text-xs font-medium">{intervalLabel}</span>
-            <span className="px-2 py-0.5 rounded-full bg-blue-50 text-blue-600 text-xs font-medium">🪙 +{mission.points} pt</span>
+            <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
+              mission.interval === 'weekly' ? 'text-violet-600 bg-violet-50' :
+              mission.interval === 'monthly' ? 'text-amber-700 bg-amber-50' :
+              'text-sky-600 bg-sky-50'
+            }`}>{intervalLabel}</span>
+            <span className="px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 text-xs font-medium">🪙 +{mission.points} pt</span>
           </div>
 
           {mission.memo ? (

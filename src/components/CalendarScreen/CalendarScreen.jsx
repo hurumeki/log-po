@@ -97,12 +97,12 @@ export default function CalendarScreen() {
                 key={day}
                 onClick={() => setSelected(isSelected ? null : dateStr)}
                 className={`flex flex-col items-center py-1 rounded-lg transition-colors ${
-                  isToday ? 'bg-blue-600' : isSelected ? 'bg-blue-100' : hasActivity ? 'hover:bg-slate-50' : 'hover:bg-slate-50'
+                  isToday ? 'bg-indigo-600' : isSelected ? 'bg-indigo-50' : hasActivity ? 'hover:bg-slate-50' : 'hover:bg-slate-50'
                 }`}
               >
                 <span className={`text-sm font-medium ${
                   isToday ? 'text-white' :
-                  isSelected ? 'text-blue-700' :
+                  isSelected ? 'text-indigo-700' :
                   dayOfWeek === 0 ? 'text-red-400' :
                   dayOfWeek === 6 ? 'text-blue-400' :
                   'text-slate-700'
@@ -110,7 +110,7 @@ export default function CalendarScreen() {
                   {day}
                 </span>
                 {hasActivity && (
-                  <span className="text-xs">💮</span>
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400 inline-block mt-0.5" />
                 )}
               </button>
             );
@@ -121,7 +121,7 @@ export default function CalendarScreen() {
       {/* Selected day detail */}
       {selected && (
         <div className="px-3 slide-down">
-          <div className="bg-white rounded-xl p-4 border border-slate-200">
+          <div className="bg-white rounded-xl p-4 shadow-md shadow-slate-200/50 border-l-4 border-indigo-400">
             <div className="flex items-center justify-between mb-3">
               <h3 className="font-bold text-slate-700">
                 {selected.replace(/-/g, '/')} の記録
@@ -136,11 +136,11 @@ export default function CalendarScreen() {
               <ul className="space-y-2">
                 {selectedEntries.map(e => (
                   <li key={e.id} className="flex items-center gap-2 text-sm">
-                    <span className="text-blue-500">✓</span>
+                    <span className="text-emerald-500">✓</span>
                     <span className="flex-1 text-slate-700">
                       {e.snapshot?.hierarchy?.join(' › ') || e.snapshot?.title}
                     </span>
-                    <span className="text-blue-600 text-xs">{e.snapshot?.points}pt</span>
+                    <span className="text-amber-600 text-xs">{e.snapshot?.points}pt</span>
                   </li>
                 ))}
               </ul>

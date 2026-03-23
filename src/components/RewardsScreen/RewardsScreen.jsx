@@ -27,7 +27,7 @@ export default function RewardsScreen() {
       {/* Page title */}
       <div className="px-4 pt-6 pb-4 flex items-center justify-between">
         <h1 className="text-2xl font-bold text-slate-800">ご褒美リスト</h1>
-        <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm font-medium">
+        <span className="bg-amber-100 text-amber-700 px-3 py-1 rounded-full text-sm font-medium">
           所持: {totalPoints.toLocaleString()} pt
         </span>
       </div>
@@ -36,7 +36,7 @@ export default function RewardsScreen() {
       <div className="px-3 pb-20 space-y-3">
         {rewards.length === 0 && (
           <div className="text-center text-slate-400 py-8">
-            <div className="text-4xl mb-3">🎁</div>
+            <div className="text-5xl mb-4">🎁</div>
             <p>ご褒美がまだありません</p>
             <p className="text-sm mt-1">右下の＋ボタンで追加しましょう！</p>
           </div>
@@ -50,7 +50,7 @@ export default function RewardsScreen() {
             <div
               key={r.id}
               className={`rounded-xl border p-4 transition-all ${
-                unlocked ? 'bg-yellow-50 border-yellow-300' : 'bg-white border-slate-200'
+                unlocked ? 'bg-gradient-to-r from-amber-50 to-yellow-50 border-2 border-amber-400 shadow-md shadow-amber-100/50' : 'bg-white shadow-md shadow-slate-200/50'
               }`}
             >
               <div className="flex items-start gap-2">
@@ -66,13 +66,13 @@ export default function RewardsScreen() {
                     </div>
                   ) : (
                     <div className="mt-2">
-                      <div className="flex justify-between text-xs text-blue-600 mb-1">
+                      <div className="flex justify-between text-xs text-indigo-600 mb-1">
                         <span>進行度 {progress}%</span>
                         <span>あと {remaining.toLocaleString()} pt</span>
                       </div>
-                      <div className="w-full bg-slate-200 rounded-full h-1.5">
+                      <div className="w-full bg-slate-200 rounded-full h-2.5">
                         <div
-                          className="bg-blue-500 h-1.5 rounded-full transition-all"
+                          className="bg-gradient-to-r from-indigo-500 to-purple-500 h-2.5 rounded-full transition-all"
                           style={{ width: `${progress}%` }}
                         />
                       </div>

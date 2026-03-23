@@ -96,7 +96,7 @@ export default function SettingsScreen() {
       <div className="px-4 space-y-3">
         {/* Notification settings card */}
         {notifSupported && (
-          <section className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+          <section className="bg-white rounded-xl shadow-md shadow-slate-200/50 overflow-hidden">
             <div className="px-4 py-3 border-b border-slate-100">
               <h2 className="text-sm font-medium text-slate-500">通知設定</h2>
             </div>
@@ -110,7 +110,7 @@ export default function SettingsScreen() {
                 <button
                   onClick={() => handleToggleNotification(!notifEnabled)}
                   className={`relative inline-flex items-center w-12 h-7 rounded-full transition-colors flex-shrink-0 ${
-                    notifEnabled ? 'bg-blue-600' : 'bg-slate-300'
+                    notifEnabled ? 'bg-indigo-600' : 'bg-slate-300'
                   }`}
                 >
                   <span
@@ -129,7 +129,7 @@ export default function SettingsScreen() {
                     type="time"
                     value={notifTime}
                     onChange={e => handleTimeChange(e.target.value)}
-                    className="border border-slate-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-blue-400"
+                    className="border border-slate-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-indigo-400"
                   />
                 </div>
               )}
@@ -145,14 +145,14 @@ export default function SettingsScreen() {
         )}
 
         {/* Data management card */}
-        <section className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+        <section className="bg-white rounded-xl shadow-md shadow-slate-200/50 overflow-hidden">
           <div className="px-4 py-3 border-b border-slate-100">
             <h2 className="text-sm font-medium text-slate-500">データ管理 (ローカル)</h2>
           </div>
           <div className="p-4 space-y-3">
             <button
               onClick={handleExport}
-              className="w-full py-3 bg-blue-600 text-white rounded-xl text-sm font-medium active:bg-blue-700 flex items-center justify-center gap-2"
+              className="w-full py-3 bg-indigo-600 text-white rounded-xl text-sm font-medium active:bg-indigo-700 flex items-center justify-center gap-2"
             >
               <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4"><path d="M10 2a1 1 0 011 1v7.586l2.293-2.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L9 10.586V3a1 1 0 011-1z"/><path d="M3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"/></svg>
               全データをエクスポート (JSON)
@@ -164,7 +164,7 @@ export default function SettingsScreen() {
             </label>
             <button
               onClick={() => setShowClearConfirm(true)}
-              className="w-full py-3 border border-red-400 text-red-500 rounded-xl text-sm font-medium active:bg-red-50 flex items-center justify-center gap-2"
+              className="w-full py-3 border-2 border-red-300 text-red-600 bg-red-50 rounded-xl text-sm font-medium active:bg-red-100 flex items-center justify-center gap-2 mt-1"
             >
               <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4"><path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd"/></svg>
               履歴の消去 (ポイント維持)

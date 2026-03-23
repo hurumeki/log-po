@@ -184,7 +184,7 @@ export default function AddMissionModal({ missions, editing, onClose }) {
                   value={title}
                   onChange={e => setTitle(e.target.value)}
                   required
-                  className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm outline-none focus:border-blue-400"
+                  className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm outline-none focus:border-indigo-400"
                 />
               </div>
               <div className="flex gap-2 pt-2">
@@ -197,7 +197,7 @@ export default function AddMissionModal({ missions, editing, onClose }) {
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 py-3 bg-blue-600 text-white font-bold rounded-xl"
+                  className="flex-1 py-3 bg-indigo-600 text-white font-bold rounded-xl"
                 >
                   更新
                 </button>
@@ -216,7 +216,7 @@ export default function AddMissionModal({ missions, editing, onClose }) {
                 onFocus={() => setShowCategoryDropdown(true)}
                 onBlur={() => setTimeout(() => setShowCategoryDropdown(false), 200)}
                 placeholder="例: 運動・健康"
-                className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm outline-none focus:border-blue-400 bg-slate-50"
+                className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm outline-none focus:border-indigo-400 bg-slate-50"
               />
               {showCategoryDropdown && (allCategories.length > 0 || PRESET_CATEGORIES.length > 0) && (
                 <div className="absolute top-full left-0 right-0 bg-white border border-slate-200 rounded-lg shadow-lg z-30 mt-1 max-h-48 overflow-y-auto">
@@ -228,7 +228,7 @@ export default function AddMissionModal({ missions, editing, onClose }) {
                         type="button"
                         onMouseDown={e => e.preventDefault()}
                         onClick={() => { setCategoryName(c.title); setShowCategoryDropdown(false); }}
-                        className="block w-full text-left px-3 py-2 text-sm hover:bg-blue-50 text-slate-700"
+                        className="block w-full text-left px-3 py-2 text-sm hover:bg-indigo-50 text-slate-700"
                       >
                         {c.title}
                       </button>
@@ -242,7 +242,7 @@ export default function AddMissionModal({ missions, editing, onClose }) {
                         type="button"
                         onMouseDown={e => e.preventDefault()}
                         onClick={() => { setCategoryName(`${p.emoji} ${p.name}`); setShowCategoryDropdown(false); }}
-                        className="block w-full text-left px-3 py-2 text-sm hover:bg-blue-50 text-slate-400"
+                        className="block w-full text-left px-3 py-2 text-sm hover:bg-indigo-50 text-slate-400"
                       >
                         {p.emoji} {p.name}
                       </button>
@@ -263,7 +263,7 @@ export default function AddMissionModal({ missions, editing, onClose }) {
                 onFocus={() => setShowSubcategoryDropdown(true)}
                 onBlur={() => setTimeout(() => setShowSubcategoryDropdown(false), 200)}
                 placeholder="例: 新しい習慣"
-                className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm outline-none focus:border-blue-400 bg-slate-50"
+                className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm outline-none focus:border-indigo-400 bg-slate-50"
               />
               {showSubcategoryDropdown && existingSubcategories.length > 0 && (
                 <div className="absolute top-full left-0 right-0 bg-white border border-slate-200 rounded-lg shadow-lg z-30 mt-1 max-h-48 overflow-y-auto">
@@ -275,7 +275,7 @@ export default function AddMissionModal({ missions, editing, onClose }) {
                         type="button"
                         onMouseDown={e => e.preventDefault()}
                         onClick={() => { setSubcategoryName(s.title); setShowSubcategoryDropdown(false); }}
-                        className="block w-full text-left px-3 py-2 text-sm hover:bg-blue-50 text-slate-700"
+                        className="block w-full text-left px-3 py-2 text-sm hover:bg-indigo-50 text-slate-700"
                       >
                         {s.title}
                       </button>
@@ -295,7 +295,7 @@ export default function AddMissionModal({ missions, editing, onClose }) {
               onChange={e => setTitle(e.target.value)}
               required
               placeholder="例: 腕立て10回"
-              className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm outline-none focus:border-blue-400"
+              className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm outline-none focus:border-indigo-400"
             />
           </div>
           )}
@@ -309,7 +309,7 @@ export default function AddMissionModal({ missions, editing, onClose }) {
               onChange={e => setMemo(e.target.value)}
               placeholder="例: 毎朝起きたらすぐやる"
               rows={2}
-              className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm outline-none focus:border-blue-400 resize-none"
+              className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm outline-none focus:border-indigo-400 resize-none"
             />
           </div>
           )}
@@ -321,7 +321,7 @@ export default function AddMissionModal({ missions, editing, onClose }) {
             <select
               value={missionInterval}
               onChange={e => setMissionInterval(e.target.value)}
-              className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm outline-none focus:border-blue-400 bg-slate-50 appearance-none"
+              className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm outline-none focus:border-indigo-400 bg-slate-50 appearance-none"
               style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%2394a3b8'%3E%3Cpath fill-rule='evenodd' d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z' clip-rule='evenodd'/%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 0.75rem center', backgroundSize: '1.25rem' }}
             >
               <option value="daily">日次 (毎日)</option>
@@ -342,7 +342,7 @@ export default function AddMissionModal({ missions, editing, onClose }) {
                     onClick={() => setWeekday(i)}
                     className={`flex-1 py-2 rounded-lg text-sm border transition-colors ${
                       weekday === i
-                        ? 'bg-blue-600 text-white border-blue-600'
+                        ? 'bg-indigo-600 text-white border-indigo-600'
                         : 'bg-white text-slate-600 border-slate-300'
                     }`}
                   >
@@ -364,7 +364,7 @@ export default function AddMissionModal({ missions, editing, onClose }) {
                 value={points}
                 onChange={e => setPoints(Math.max(1, Number(e.target.value) || 1))}
                 min={1}
-                className="flex-1 border border-slate-200 rounded-lg px-3 py-2.5 text-sm outline-none focus:border-blue-400"
+                className="flex-1 border border-slate-200 rounded-lg px-3 py-2.5 text-sm outline-none focus:border-indigo-400"
               />
               <span className="text-sm text-slate-500 font-medium">pt</span>
             </div>
@@ -382,7 +382,7 @@ export default function AddMissionModal({ missions, editing, onClose }) {
             </button>
             <button
               type="submit"
-              className="flex-1 py-3 bg-blue-600 text-white font-bold rounded-xl"
+              className="flex-1 py-3 bg-indigo-600 text-white font-bold rounded-xl"
             >
               {editing ? '更新' : '追加'}
             </button>

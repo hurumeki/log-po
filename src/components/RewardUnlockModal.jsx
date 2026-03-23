@@ -16,7 +16,7 @@ export default function RewardUnlockModal({ reward, onClose }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
-      <div className="bg-slate-800 rounded-2xl p-8 mx-4 text-center max-w-xs w-full">
+      <div className="bg-gradient-to-b from-slate-800 to-slate-900 rounded-2xl p-8 mx-4 text-center max-w-xs w-full">
         <div className="text-6xl mb-4">🎉</div>
         <h2 className="text-yellow-400 text-2xl font-bold mb-2">目標達成！</h2>
         <p className="text-white text-lg mb-1">
@@ -25,7 +25,7 @@ export default function RewardUnlockModal({ reward, onClose }) {
         <p className="text-slate-300 text-sm mb-6">が解禁されました！</p>
         <button
           onClick={onClose}
-          className="bg-yellow-400 text-slate-800 font-bold px-8 py-2 rounded-full"
+          className="bg-gradient-to-r from-amber-400 to-yellow-400 shadow-lg shadow-amber-400/30 text-slate-800 font-bold px-8 py-2 rounded-full"
         >
           やった！
         </button>
