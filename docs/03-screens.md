@@ -111,6 +111,7 @@ Reset is executed by `runResetCheck()` at app startup.
 | Data import | **Implemented** | Reads JSON file to restore. Gray button + upload icon |
 | History clear | **Implemented** | With confirmation dialog. Total points are preserved. Red-outlined button + trash icon |
 | Notification settings | **Implemented** | Toggle switch for daily reminder + time picker. Uses Service Worker Notification API. Includes permission denied warning |
+| Language settings | **Implemented** | Toggle between Japanese (日本語) and English. Stored in userData (IndexedDB). Uses React Context-based i18n system |
 
 ---
 

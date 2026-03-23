@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
 import { db } from '../../db/db';
+import { useLanguage } from '../../i18n/LanguageContext';
 
 export default function AddRewardModal({ editing, onClose }) {
+  const { t } = useLanguage();
   const [title, setTitle] = useState('');
   const [requiredPoints, setRequiredPoints] = useState(500);
 
@@ -44,22 +46,22 @@ export default function AddRewardModal({ editing, onClose }) {
         onTouchMove={e => e.stopPropagation()}
       >
         <h2 className="text-lg font-bold text-slate-800 mb-4">
-          {editing ? '報酬編集' : '報酬追加'}
+          {editing ? t.addReward.editTitle : t.addReward.addTitle}
         </h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="text-sm text-slate-600 block mb-1">報酬内容 *</label>
+            <label className="text-sm text-slate-600 block mb-1">{t.addReward.contentLabel}</label>
             <input
               type="text"
               value={title}
               onChange={e => setTitle(e.target.value)}
               required
-              placeholder="例：ケーキを買う"
+              placeholder={t.addReward.contentPlaceholder}
               className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:border-indigo-400"
             />
           </div>
           <div>
-            <label className="text-sm text-slate-600 block mb-1">必要ポイント</label>
+            <label className="text-sm text-slate-600 block mb-1">{t.addReward.pointsLabel}</label>
             <input
               type="number"
               value={requiredPoints}
@@ -74,13 +76,13 @@ export default function AddRewardModal({ editing, onClose }) {
               onClick={onClose}
               className="flex-1 py-3 border border-slate-300 rounded-xl text-slate-600"
             >
-              キャンセル
+              {t.common.cancel}
             </button>
             <button
               type="submit"
               className="flex-1 py-3 bg-indigo-600 text-white font-bold rounded-xl"
             >
-              {editing ? '更新' : '追加'}
+              {editing ? t.common.update : t.common.add}
             </button>
           </div>
         </form>

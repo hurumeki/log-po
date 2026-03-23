@@ -2,8 +2,10 @@ import { useState } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db } from '../../db/db';
 import AddRewardModal from './AddRewardModal';
+import { useLanguage } from '../../i18n/LanguageContext';
 
 export default function RewardsScreen() {
+  const { lang, t } = useLanguage();
   const [showModal, setShowModal] = useState(false);
 
   const rewards = useLiveQuery(() =>
@@ -16,7 +18,7 @@ export default function RewardsScreen() {
   );
   const totalPoints = totalPointsRow?.value ?? 0;
 
-  if (!rewards) return <div className="p-4 text-center text-slate-500">読み込み中...</div>;
+  if (!rewards) return <div className="p-4 text-center text-slate-500">{t.common.loading}</div>;
 
   async function handleDelete(reward) {
     await db.rewards.delete(reward.id);
@@ -26,9 +28,9 @@ export default function RewardsScreen() {
     <div>
       {/* Page title */}
       <div className="px-4 pt-6 pb-4 flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-slate-800">ご褒美リスト</h1>
+        <h1 className="text-2xl font-bold text-slate-800">{t.rewards.title}</h1>
         <span className="bg-amber-100 text-amber-700 px-3 py-1 rounded-full text-sm font-medium">
-          所持: {totalPoints.toLocaleString()} pt
+          {t.rewards.holding}: {totalPoints.toLocaleString()} pt
         </span>
       </div>
 
@@ -37,8 +39,8 @@ export default function RewardsScreen() {
         {rewards.length === 0 && (
           <div className="text-center text-slate-400 py-8">
             <div className="text-5xl mb-4">🎁</div>
-            <p>ご褒美がまだありません</p>
-            <p className="text-sm mt-1">右下の＋ボタンで追加しましょう！</p>
+            <p>{t.rewards.noRewards}</p>
+            <p className="text-sm mt-1">{t.rewards.noRewardsHint}</p>
           </div>
         )}
         {rewards.map(r => {
@@ -58,17 +60,17 @@ export default function RewardsScreen() {
                 <div className="flex-1">
                   <div className="font-bold text-slate-800">{r.title}</div>
                   <div className="text-sm text-slate-500 mt-0.5">
-                    必要: {r.requiredPoints.toLocaleString()} pt
+                    {t.rewards.required}: {r.requiredPoints.toLocaleString()} pt
                   </div>
                   {unlocked ? (
                     <div className="text-xs text-yellow-600 mt-1 font-medium">
-                      GET! 🎉 {new Date(r.unlockedAt).toLocaleDateString('ja-JP')} 獲得
+                      {t.rewards.gotDate(new Date(r.unlockedAt).toLocaleDateString(lang === 'ja' ? 'ja-JP' : 'en-US'))}
                     </div>
                   ) : (
                     <div className="mt-2">
                       <div className="flex justify-between text-xs text-indigo-600 mb-1">
-                        <span>進行度 {progress}%</span>
-                        <span>あと {remaining.toLocaleString()} pt</span>
+                        <span>{t.rewards.progress(progress)}</span>
+                        <span>{t.rewards.remaining(remaining.toLocaleString())}</span>
                       </div>
                       <div className="w-full bg-slate-200 rounded-full h-2.5">
                         <div
@@ -81,7 +83,7 @@ export default function RewardsScreen() {
                 </div>
                 <button
                   onClick={() => {
-                    if (window.confirm(`「${r.title}」を削除しますか？`)) handleDelete(r);
+                    if (window.confirm(t.rewards.deleteConfirm(r.title))) handleDelete(r);
                   }}
                   className="text-slate-400 hover:text-red-400 active:text-red-500 text-lg min-w-[44px] min-h-[44px] flex items-center justify-center -mr-2"
                 >

@@ -2,8 +2,10 @@ import { useState, useEffect } from 'react';
 import { exportAllData, importAllData, clearHistory, getNotificationSettings, setNotificationEnabled, setNotificationTime } from '../../db/db';
 import { isNotificationSupported, requestPermission, getPermissionStatus, scheduleNotification, cancelScheduledNotification } from '../../utils/notification';
 import { db } from '../../db/db';
+import { useLanguage } from '../../i18n/LanguageContext';
 
 export default function SettingsScreen() {
+  const { lang, setLang, t } = useLanguage();
   const [showClearConfirm, setShowClearConfirm] = useState(false);
   const [message, setMessage] = useState('');
   const [notifEnabled, setNotifEnabled] = useState(false);
@@ -31,18 +33,18 @@ export default function SettingsScreen() {
       const result = await requestPermission();
       setPermissionStatus(result);
       if (result !== 'granted') {
-        showMessage('通知の許可が必要です');
+        showMessage(t.settings.notifPermRequired);
         return;
       }
       await setNotificationEnabled(true);
       setNotifEnabled(true);
       scheduleNotification(() => db.missions.toArray(), notifTime);
-      showMessage('通知をオンにしました');
+      showMessage(t.settings.notifOn);
     } else {
       await setNotificationEnabled(false);
       setNotifEnabled(false);
       cancelScheduledNotification();
-      showMessage('通知をオフにしました');
+      showMessage(t.settings.notifOff);
     }
   }
 
@@ -63,7 +65,7 @@ export default function SettingsScreen() {
     a.download = `logpo-backup-${new Date().toISOString().slice(0, 10)}.json`;
     a.click();
     URL.revokeObjectURL(url);
-    showMessage('保存済み');
+    showMessage(t.settings.exported);
   }
 
   async function handleImport(e) {
@@ -73,9 +75,9 @@ export default function SettingsScreen() {
       const text = await file.text();
       const data = JSON.parse(text);
       await importAllData(data);
-      showMessage('データを復元しました');
+      showMessage(t.settings.imported);
     } catch {
-      showMessage('ファイルの読み込みに失敗しました');
+      showMessage(t.settings.importError);
     }
     e.target.value = '';
   }
@@ -83,29 +85,63 @@ export default function SettingsScreen() {
   async function handleClearHistory() {
     await clearHistory();
     setShowClearConfirm(false);
-    showMessage('履歴を消去しました');
+    showMessage(t.settings.historyCleared);
   }
 
   return (
     <div>
       {/* Page title */}
       <div className="px-4 pt-6 pb-4">
-        <h1 className="text-2xl font-bold text-slate-800">設定・データ管理</h1>
+        <h1 className="text-2xl font-bold text-slate-800">{t.settings.title}</h1>
       </div>
 
       <div className="px-4 space-y-3">
+        {/* Language settings card */}
+        <section className="bg-white rounded-xl shadow-md shadow-slate-200/50 overflow-hidden">
+          <div className="px-4 py-3 border-b border-slate-100">
+            <h2 className="text-sm font-medium text-slate-500">{t.settings.languageSection}</h2>
+          </div>
+          <div className="p-4">
+            <div className="flex items-center justify-between">
+              <div className="text-sm font-medium text-slate-700">{t.settings.languageLabel}</div>
+              <div className="flex rounded-lg border border-slate-200 overflow-hidden">
+                <button
+                  onClick={() => setLang('ja')}
+                  className={`px-4 py-2 text-sm font-medium transition-colors ${
+                    lang === 'ja'
+                      ? 'bg-indigo-600 text-white'
+                      : 'bg-white text-slate-600 hover:bg-slate-50'
+                  }`}
+                >
+                  日本語
+                </button>
+                <button
+                  onClick={() => setLang('en')}
+                  className={`px-4 py-2 text-sm font-medium transition-colors ${
+                    lang === 'en'
+                      ? 'bg-indigo-600 text-white'
+                      : 'bg-white text-slate-600 hover:bg-slate-50'
+                  }`}
+                >
+                  English
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* Notification settings card */}
         {notifSupported && (
           <section className="bg-white rounded-xl shadow-md shadow-slate-200/50 overflow-hidden">
             <div className="px-4 py-3 border-b border-slate-100">
-              <h2 className="text-sm font-medium text-slate-500">通知設定</h2>
+              <h2 className="text-sm font-medium text-slate-500">{t.settings.notificationSection}</h2>
             </div>
             <div className="p-4 space-y-4">
               {/* Toggle */}
               <div className="flex items-center justify-between">
                 <div>
-                  <div className="text-sm font-medium text-slate-700">未完了リマインダー</div>
-                  <div className="text-xs text-slate-400 mt-0.5">指定時刻に未完了ミッションを通知</div>
+                  <div className="text-sm font-medium text-slate-700">{t.settings.reminderLabel}</div>
+                  <div className="text-xs text-slate-400 mt-0.5">{t.settings.reminderDesc}</div>
                 </div>
                 <button
                   onClick={() => handleToggleNotification(!notifEnabled)}
@@ -124,7 +160,7 @@ export default function SettingsScreen() {
               {/* Time picker */}
               {notifEnabled && (
                 <div className="flex items-center justify-between">
-                  <div className="text-sm text-slate-700">通知時刻</div>
+                  <div className="text-sm text-slate-700">{t.settings.notifTime}</div>
                   <input
                     type="time"
                     value={notifTime}
@@ -137,7 +173,7 @@ export default function SettingsScreen() {
               {/* Permission denied warning */}
               {permissionStatus === 'denied' && (
                 <p className="text-xs text-red-500">
-                  通知がブロックされています。ブラウザの設定から通知を許可してください。
+                  {t.settings.notifBlocked}
                 </p>
               )}
             </div>
@@ -147,7 +183,7 @@ export default function SettingsScreen() {
         {/* Data management card */}
         <section className="bg-white rounded-xl shadow-md shadow-slate-200/50 overflow-hidden">
           <div className="px-4 py-3 border-b border-slate-100">
-            <h2 className="text-sm font-medium text-slate-500">データ管理 (ローカル)</h2>
+            <h2 className="text-sm font-medium text-slate-500">{t.settings.dataSection}</h2>
           </div>
           <div className="p-4 space-y-3">
             <button
@@ -155,11 +191,11 @@ export default function SettingsScreen() {
               className="w-full py-3 bg-indigo-600 text-white rounded-xl text-sm font-medium active:bg-indigo-700 flex items-center justify-center gap-2"
             >
               <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4"><path d="M10 2a1 1 0 011 1v7.586l2.293-2.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L9 10.586V3a1 1 0 011-1z"/><path d="M3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"/></svg>
-              全データをエクスポート (JSON)
+              {t.settings.exportBtn}
             </button>
             <label className="w-full py-3 bg-slate-100 text-slate-700 rounded-xl text-sm font-medium cursor-pointer active:bg-slate-200 flex items-center justify-center gap-2">
               <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4"><path d="M10 18a1 1 0 01-1-1v-7.586l-2.293 2.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 9.414V17a1 1 0 01-1 1z"/><path d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"/></svg>
-              データをインポート
+              {t.settings.importBtn}
               <input type="file" accept=".json" onChange={handleImport} className="hidden" />
             </label>
             <button
@@ -167,7 +203,7 @@ export default function SettingsScreen() {
               className="w-full py-3 border-2 border-red-300 text-red-600 bg-red-50 rounded-xl text-sm font-medium active:bg-red-100 flex items-center justify-center gap-2 mt-1"
             >
               <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4"><path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd"/></svg>
-              履歴の消去 (ポイント維持)
+              {t.settings.clearHistoryBtn}
             </button>
           </div>
         </section>
@@ -177,22 +213,22 @@ export default function SettingsScreen() {
       {showClearConfirm && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4">
           <div className="bg-white rounded-2xl p-6 max-w-xs w-full">
-            <h3 className="font-bold text-slate-800 mb-2">履歴を消去しますか？</h3>
+            <h3 className="font-bold text-slate-800 mb-2">{t.settings.clearConfirmTitle}</h3>
             <p className="text-sm text-slate-500 mb-4">
-              過去の達成履歴がすべて削除されます。累計ポイントは維持されます。
+              {t.settings.clearConfirmDesc}
             </p>
             <div className="flex gap-2">
               <button
                 onClick={() => setShowClearConfirm(false)}
                 className="flex-1 py-3 border border-slate-300 rounded-xl text-slate-600"
               >
-                キャンセル
+                {t.common.cancel}
               </button>
               <button
                 onClick={handleClearHistory}
                 className="flex-1 py-3 bg-red-500 text-white rounded-xl font-bold"
               >
-                消去する
+                {t.settings.clearConfirmBtn}
               </button>
             </div>
           </div>

@@ -1,3 +1,5 @@
+import { useLanguage } from '../i18n/LanguageContext';
+
 function MissionIcon({ active }) {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={active ? 2.4 : 1.8} className="w-6 h-6">
@@ -44,11 +46,13 @@ function SettingsIcon({ active }) {
 }
 
 export default function BottomNav({ current, onChange }) {
+  const { t } = useLanguage();
+
   const tabs = [
-    { key: 'mission', label: 'ミッション', Icon: MissionIcon },
-    { key: 'calendar', label: 'カレンダー', Icon: CalendarIcon },
-    { key: 'rewards', label: 'ご褒美', Icon: GiftIcon },
-    { key: 'settings', label: '設定', Icon: SettingsIcon },
+    { key: 'mission', label: t.nav.mission, Icon: MissionIcon },
+    { key: 'calendar', label: t.nav.calendar, Icon: CalendarIcon },
+    { key: 'rewards', label: t.nav.rewards, Icon: GiftIcon },
+    { key: 'settings', label: t.nav.settings, Icon: SettingsIcon },
   ];
 
   return (
