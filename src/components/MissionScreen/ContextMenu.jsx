@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { useLanguage } from '../../i18n/LanguageContext';
 
-export default function ContextMenu({ onEdit, onDelete, className = '', size = 'default' }) {
+export default function ContextMenu({ onEdit, onDelete, onMoveUp, onMoveDown, className = '', size = 'default' }) {
   const { t } = useLanguage();
   const [open, setOpen] = useState(false);
   const [menuPos, setMenuPos] = useState({ top: 0, right: 0 });
@@ -51,6 +51,22 @@ export default function ContextMenu({ onEdit, onDelete, className = '', size = '
             className="fixed bg-white border border-slate-200 rounded-lg shadow-lg z-[9999] text-sm overflow-hidden whitespace-nowrap"
             style={{ top: menuPos.top, right: menuPos.right }}
           >
+            {onMoveUp && (
+              <button
+                onClick={e => { e.stopPropagation(); setOpen(false); onMoveUp(); }}
+                className="block w-full text-left px-4 py-2 hover:bg-slate-50"
+              >
+                {t.contextMenu.moveUp}
+              </button>
+            )}
+            {onMoveDown && (
+              <button
+                onClick={e => { e.stopPropagation(); setOpen(false); onMoveDown(); }}
+                className="block w-full text-left px-4 py-2 hover:bg-slate-50"
+              >
+                {t.contextMenu.moveDown}
+              </button>
+            )}
             <button
               onClick={e => { e.stopPropagation(); setOpen(false); onEdit(); }}
               className="block w-full text-left px-4 py-2 hover:bg-slate-50"

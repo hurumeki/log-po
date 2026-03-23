@@ -32,6 +32,7 @@ Features described in the spec but not yet implemented.
 
 | Date | Version | Changes |
 |------|---------|---------|
+| 2026-03-23 | v1.2.0 | Added mission reordering via Move Up/Down in context menu. Added `sortOrder` field to missions store (DB v2 migration) |
 | 2026-03-23 | v1.1.0 | Added language settings (Japanese/English) with i18n context system. All UI strings are now translatable |
 | 2026-03-23 | v1.0.5 | Added mission detail popup with URL linkification |
 | 2026-03-22 | v1.0.4 | Added detail memo field to mission add/edit modal and display on task cards |

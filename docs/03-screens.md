@@ -29,6 +29,7 @@ Screens are switched via bottom navigation with 4 tabs (`max-w-md` = 448px, cons
 | Uncomplete (undo) | **Implemented** | Tapping a completed task unchecks it, subtracts points, and removes the latest history entry |
 | Delete confirmation | **Implemented** | Leaf tasks show simple confirm; categories/subcategories show descendant task count |
 | Mission deletion | **Implemented** | Recursive deletion of mission and all descendants. History entries are preserved for calendar records |
+| Mission reorder | **Implemented** | Move Up/Down via context menu (⋯). Reorders within same parent group using `sortOrder` field |
 
 ### Mission Settings
 

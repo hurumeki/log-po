@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { db } from '../../db/db';
+import { db, getNextSortOrder } from '../../db/db';
 import { DEPTH } from '../../constants';
 import { useLanguage } from '../../i18n/LanguageContext';
 
@@ -102,6 +102,7 @@ export default function AddMissionModal({ missions, editing, onClose }) {
           depth: DEPTH.CATEGORY,
           completedAt: null,
           createdAt: new Date().toISOString(),
+          sortOrder: await getNextSortOrder(null),
         });
         category = { id: catId, depth: DEPTH.CATEGORY };
       }
@@ -122,6 +123,7 @@ export default function AddMissionModal({ missions, editing, onClose }) {
             depth: DEPTH.SUBCATEGORY,
             completedAt: null,
             createdAt: new Date().toISOString(),
+            sortOrder: await getNextSortOrder(category.id),
           });
           subcategory = { id: subId, depth: DEPTH.SUBCATEGORY };
         }
@@ -143,6 +145,7 @@ export default function AddMissionModal({ missions, editing, onClose }) {
       depth,
       completedAt: null,
       createdAt: new Date().toISOString(),
+      sortOrder: await getNextSortOrder(parentId),
     });
     onClose();
   }

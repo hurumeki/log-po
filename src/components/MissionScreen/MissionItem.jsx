@@ -10,7 +10,7 @@ const INTERVAL_COLORS = {
   monthly: 'text-amber-700 bg-amber-50',
 };
 
-export default function MissionItem({ mission, missions, onComplete, onUncomplete, onDelete, onEdit }) {
+export default function MissionItem({ mission, missions, onComplete, onUncomplete, onDelete, onEdit, onMove }) {
   const { t } = useLanguage();
   const [expanded, setExpanded] = useState(true);
   const [bouncing, setBouncing] = useState(false);
@@ -19,6 +19,13 @@ export default function MissionItem({ mission, missions, onComplete, onUncomplet
   const children = missions.filter(m => m.parentId === mission.id);
   const isLeaf = children.length === 0;
   const isCompleted = !!mission.completedAt;
+
+  const siblings = missions
+    .filter(m => m.parentId === mission.parentId)
+    .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0));
+  const siblingIdx = siblings.findIndex(s => s.id === mission.id);
+  const canMoveUp = siblingIdx > 0;
+  const canMoveDown = siblingIdx < siblings.length - 1;
 
   function handleCheck() {
     if (isCompleted) {
@@ -72,6 +79,8 @@ export default function MissionItem({ mission, missions, onComplete, onUncomplet
             <ContextMenu
               onEdit={() => onEdit(mission)}
               onDelete={handleDeleteWithConfirm}
+              onMoveUp={canMoveUp ? () => onMove(mission, 'up') : null}
+              onMoveDown={canMoveDown ? () => onMove(mission, 'down') : null}
             />
             <span className="text-slate-400 text-xs">{expanded ? '▼' : '▶'}</span>
           </div>
@@ -88,6 +97,7 @@ export default function MissionItem({ mission, missions, onComplete, onUncomplet
                 onUncomplete={onUncomplete}
                 onDelete={onDelete}
                 onEdit={onEdit}
+                onMove={onMove}
               />
             ))}
           </div>
@@ -115,6 +125,8 @@ export default function MissionItem({ mission, missions, onComplete, onUncomplet
             <ContextMenu
               onEdit={() => onEdit(mission)}
               onDelete={handleDeleteWithConfirm}
+              onMoveUp={canMoveUp ? () => onMove(mission, 'up') : null}
+              onMoveDown={canMoveDown ? () => onMove(mission, 'down') : null}
               size="small"
             />
             <span className="text-slate-400 text-xs">{expanded ? '▼' : '▶'}</span>
@@ -132,6 +144,7 @@ export default function MissionItem({ mission, missions, onComplete, onUncomplet
                 onUncomplete={onUncomplete}
                 onDelete={onDelete}
                 onEdit={onEdit}
+                onMove={onMove}
               />
             ))}
           </div>
@@ -181,6 +194,8 @@ export default function MissionItem({ mission, missions, onComplete, onUncomplet
       <ContextMenu
         onEdit={() => onEdit(mission)}
         onDelete={handleDeleteWithConfirm}
+        onMoveUp={canMoveUp ? () => onMove(mission, 'up') : null}
+        onMoveDown={canMoveDown ? () => onMove(mission, 'down') : null}
         className="flex-shrink-0"
       />
 

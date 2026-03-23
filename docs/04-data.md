@@ -6,7 +6,7 @@
 
 ```
 Key: ++id (auto-increment)
-Indexes: parentId, depth, interval, weekday
+Indexes: parentId, depth, interval, weekday, sortOrder
 ```
 
 | Field | Type | Description |
@@ -21,6 +21,7 @@ Indexes: parentId, depth, interval, weekday
 | points | number | Points earned |
 | completedAt | string \| null | Completion datetime (ISO 8601) |
 | createdAt | string | Creation datetime |
+| sortOrder | number | Sort order within siblings (lower = higher position) |
 
 ## 5.2 History Store
 
