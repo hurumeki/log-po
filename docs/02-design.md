@@ -12,6 +12,7 @@
 | Text Color | `#1E293B` (slate-800) | — |
 | Card Style | White with warm shadow (`shadow-md shadow-slate-200/50`) | No borders, softer feel |
 | Interval Badges | Sky (daily), Violet (weekly), Amber (monthly) | Color-coded for quick recognition |
+| Favicon / PWA Icon | Checkmark + gold sparkles on `#EEE8FF` lavender bg | 3-stop gradient: `#4338CA` → `#7C3AED` → `#C084FC`, sparkles `#FCD34D` |
 
 ### Current Implementation Status
 
