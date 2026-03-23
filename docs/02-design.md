@@ -24,3 +24,4 @@
 | Font | **Implemented** | Noto Sans JP + fallbacks (Hiragino, Meiryo, etc.) |
 | Card Style | **Implemented** | Shadow-based cards without borders across all screens |
 | Interval Badges | **Implemented** | Sky/violet/amber color coding for daily/weekly/monthly |
+| Favicon / PWA Icon | **Implemented** | SVG favicon, PWA icons (192/512 standard + maskable), iOS apple-touch-icon (180x180) |

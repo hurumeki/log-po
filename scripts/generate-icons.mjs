@@ -13,13 +13,20 @@ const bgColor = process.argv[4] || '#1E293B';
 
 const svgContent = fs.readFileSync(svgFile, 'utf-8');
 
-const SIZES = [192, 512];
+// [size, suffix, iconScale]
+const VARIANTS = [
+  [192, '', 0.65],
+  [512, '', 0.65],
+  [192, '-maskable', 0.50],
+  [512, '-maskable', 0.50],
+  [180, '-apple-touch', 0.75],  // iOS apple-touch-icon (no maskable safe zone needed)
+];
 
 async function generateIcons() {
   const browser = await chromium.launch();
 
-  for (const size of SIZES) {
-    for (const [suffix, iconScale] of [['', 0.65], ['-maskable', 0.50]]) {
+  for (const [size, suffix, iconScale] of VARIANTS) {
+    {
       const page = await browser.newPage();
       const iconSize = Math.round(size * iconScale);
 
