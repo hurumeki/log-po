@@ -3,12 +3,8 @@ import { useLanguage } from '../i18n/LanguageContext';
 function MissionIcon({ active }) {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={active ? 2.4 : 1.8} className="w-6 h-6">
-      <circle cx="12" cy="12" r="9" />
-      <circle cx="12" cy="12" r="3" />
-      <line x1="12" y1="3" x2="12" y2="6" />
-      <line x1="12" y1="18" x2="12" y2="21" />
-      <line x1="3" y1="12" x2="6" y2="12" />
-      <line x1="18" y1="12" x2="21" y2="12" />
+      <rect x="3" y="3" width="18" height="18" rx="3" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M8 12.5 L11 15.5 L16.5 9" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
