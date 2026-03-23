@@ -10,7 +10,7 @@ Features described in the spec but not yet implemented.
 | Fanfare sound | Low | Sound effect on reward unlock |
 | Calendar daily point totals | Low | Display point totals alongside stamps |
 | Weekly reference day change as separate mission | Low | To prevent history inconsistency |
-| Detail memo UI | Low | Memo field exists in DB schema but has no input in AddMissionModal |
+
 
 ---
 
@@ -32,6 +32,8 @@ Features described in the spec but not yet implemented.
 
 | Date | Version | Changes |
 |------|---------|---------|
+| 2026-03-23 | v1.0.5 | Added mission detail popup with URL linkification |
+| 2026-03-22 | v1.0.4 | Added detail memo field to mission add/edit modal and display on task cards |
 | 2026-03-22 | v1.0.3 | Fixed modal z-index, enlarged touch targets, greyed-out completed badges, added delete confirmation dialog |
 | 2026-03-22 | v1.0.2 | Safe Area support (header/BottomNav), unified max-width, added BottomNav tap feedback |
 | 2026-03-22 | v1.0.1 | UI review fixes: FAB button desktop placement, Settings screen button style improvements |
