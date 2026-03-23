@@ -124,7 +124,7 @@ export default function MissionScreen({ onRewardUnlocked, onPointsChanged }) {
       />
 
       {/* FAB */}
-      <div className="fixed bottom-20 left-1/2 -translate-x-1/2 w-full max-w-md pointer-events-none z-40">
+      <div className="fixed bottom-24 left-1/2 -translate-x-1/2 w-full max-w-md pointer-events-none z-40">
         <button
           onClick={() => { setEditingMission(null); setShowModal(true); }}
           className="absolute bottom-0 right-4 w-14 h-14 bg-gradient-to-r from-indigo-600 to-purple-500 text-white rounded-full text-2xl font-bold shadow-lg shadow-indigo-500/30 flex items-center justify-center pointer-events-auto"
