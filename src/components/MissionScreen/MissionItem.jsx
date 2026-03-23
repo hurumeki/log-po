@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { DEPTH } from '../../constants';
 import ContextMenu from './ContextMenu';
+import MissionDetailPopup from './MissionDetailPopup';
 
 const INTERVAL_LABELS = {
   daily: '日次',
@@ -13,6 +14,7 @@ const WEEKDAYS = ['日', '月', '火', '水', '木', '金', '土'];
 export default function MissionItem({ mission, missions, onComplete, onUncomplete, onDelete, onEdit }) {
   const [expanded, setExpanded] = useState(true);
   const [bouncing, setBouncing] = useState(false);
+  const [showDetail, setShowDetail] = useState(false);
 
   const children = missions.filter(m => m.parentId === mission.id);
   const isLeaf = children.length === 0;
@@ -144,12 +146,12 @@ export default function MissionItem({ mission, missions, onComplete, onUncomplet
         )}
       </button>
 
-      <div className="flex-1 min-w-0">
+      <div className="flex-1 min-w-0 cursor-pointer" onClick={() => setShowDetail(true)}>
         <div className={`font-semibold text-sm ${isCompleted ? 'line-through text-slate-400' : 'text-slate-800'}`}>
           {mission.title}
         </div>
         {mission.memo && (
-          <div className={`text-xs mt-0.5 ${isCompleted ? 'text-slate-400' : 'text-slate-500'}`}>
+          <div className={`text-xs mt-0.5 truncate ${isCompleted ? 'text-slate-400' : 'text-slate-500'}`}>
             {mission.memo}
           </div>
         )}
@@ -167,6 +169,13 @@ export default function MissionItem({ mission, missions, onComplete, onUncomplet
         onDelete={handleDeleteWithConfirm}
         className="flex-shrink-0"
       />
+
+      {showDetail && (
+        <MissionDetailPopup
+          mission={mission}
+          onClose={() => setShowDetail(false)}
+        />
+      )}
     </div>
   );
 }
