@@ -2,12 +2,7 @@ import { useState } from 'react';
 import { DEPTH } from '../../constants';
 import ContextMenu from './ContextMenu';
 import MissionDetailPopup from './MissionDetailPopup';
-
-const INTERVAL_LABELS = {
-  daily: '日次',
-  weekly: '週次',
-  monthly: '月次',
-};
+import { useLanguage } from '../../i18n/LanguageContext';
 
 const INTERVAL_COLORS = {
   daily: 'text-sky-600 bg-sky-50',
@@ -15,9 +10,8 @@ const INTERVAL_COLORS = {
   monthly: 'text-amber-700 bg-amber-50',
 };
 
-const WEEKDAYS = ['日', '月', '火', '水', '木', '金', '土'];
-
 export default function MissionItem({ mission, missions, onComplete, onUncomplete, onDelete, onEdit }) {
+  const { t } = useLanguage();
   const [expanded, setExpanded] = useState(true);
   const [bouncing, setBouncing] = useState(false);
   const [showDetail, setShowDetail] = useState(false);
@@ -37,8 +31,8 @@ export default function MissionItem({ mission, missions, onComplete, onUncomplet
   }
 
   const intervalLabel = mission.interval === 'weekly' && mission.weekday != null
-    ? `週次:${WEEKDAYS[mission.weekday]}曜`
-    : INTERVAL_LABELS[mission.interval] || '';
+    ? t.interval.weeklyDay(t.weekdays[mission.weekday])
+    : t.interval[mission.interval] || '';
 
   // Count all descendant leaf tasks for delete confirmation
   function countDescendantTasks(parentId) {
@@ -54,11 +48,11 @@ export default function MissionItem({ mission, missions, onComplete, onUncomplet
 
   function handleDeleteWithConfirm() {
     if (isLeaf) {
-      if (window.confirm(`「${mission.title}」を削除しますか？`)) onDelete(mission);
+      if (window.confirm(t.mission.deleteConfirm(mission.title))) onDelete(mission);
     } else {
       const taskCount = countDescendantTasks(mission.id);
-      const label = mission.depth === DEPTH.CATEGORY ? 'カテゴリ' : 'サブカテゴリ';
-      if (window.confirm(`「${mission.title}」を削除しますか？\n\nこの${label}内の${taskCount}件のミッションもすべて削除されます。`)) onDelete(mission);
+      const label = mission.depth === DEPTH.CATEGORY ? t.mission.category : t.mission.subcategory;
+      if (window.confirm(t.mission.deleteGroupConfirm(mission.title, label, taskCount))) onDelete(mission);
     }
   }
 

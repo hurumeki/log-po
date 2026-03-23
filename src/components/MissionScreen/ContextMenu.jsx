@@ -1,7 +1,9 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { createPortal } from 'react-dom';
+import { useLanguage } from '../../i18n/LanguageContext';
 
 export default function ContextMenu({ onEdit, onDelete, className = '', size = 'default' }) {
+  const { t } = useLanguage();
   const [open, setOpen] = useState(false);
   const [menuPos, setMenuPos] = useState({ top: 0, right: 0 });
   const btnRef = useRef(null);
@@ -53,13 +55,13 @@ export default function ContextMenu({ onEdit, onDelete, className = '', size = '
               onClick={e => { e.stopPropagation(); setOpen(false); onEdit(); }}
               className="block w-full text-left px-4 py-2 hover:bg-slate-50"
             >
-              ✏️ 編集
+              {t.contextMenu.edit}
             </button>
             <button
               onClick={e => { e.stopPropagation(); setOpen(false); onDelete(); }}
               className="block w-full text-left px-4 py-2 hover:bg-red-50 text-red-600"
             >
-              🗑 削除
+              {t.contextMenu.delete}
             </button>
           </div>
         </>,

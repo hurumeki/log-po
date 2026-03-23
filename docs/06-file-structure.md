@@ -32,6 +32,10 @@ log-po/
 │   ├── utils/
 │   │   ├── confetti.js              # Confetti effect function
 │   │   └── notification.js          # Notification scheduling & permission helpers
+│   ├── i18n/
+│   │   ├── LanguageContext.jsx      # React Context provider + useLanguage hook
+│   │   ├── ja.js                    # Japanese translations
+│   │   └── en.js                    # English translations
 │   ├── constants.js                 # Shared constants (DEPTH enum)
 │   ├── App.jsx                      # Root component
 │   ├── main.jsx                     # Entry point

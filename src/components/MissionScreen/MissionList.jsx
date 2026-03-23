@@ -1,6 +1,8 @@
 import MissionItem from './MissionItem';
+import { useLanguage } from '../../i18n/LanguageContext';
 
 export default function MissionList({ missions, onComplete, onUncomplete, onDelete, onEdit }) {
+  const { t } = useLanguage();
   // Build tree
   const roots = missions.filter(m => !m.parentId);
 
@@ -8,8 +10,8 @@ export default function MissionList({ missions, onComplete, onUncomplete, onDele
     return (
       <div className="p-8 text-center text-slate-400">
         <div className="text-5xl mb-4">🎯</div>
-        <p className="text-slate-500">ミッションがまだありません</p>
-        <p className="text-sm mt-1 text-slate-500">右下の＋ボタンで追加しましょう！</p>
+        <p className="text-slate-500">{t.mission.noMissions}</p>
+        <p className="text-sm mt-1 text-slate-500">{t.mission.noMissionsHint}</p>
       </div>
     );
   }

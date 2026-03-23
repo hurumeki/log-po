@@ -1,18 +1,10 @@
 import { useState, useEffect, useMemo } from 'react';
 import { db } from '../../db/db';
 import { DEPTH } from '../../constants';
-
-const WEEKDAYS = ['日', '月', '火', '水', '木', '金', '土'];
-
-const PRESET_CATEGORIES = [
-  { emoji: '💪', name: '運動・健康' },
-  { emoji: '📚', name: '学習・勉強' },
-  { emoji: '🏠', name: '家事・生活' },
-  { emoji: '💼', name: '仕事・キャリア' },
-  { emoji: '🌟', name: 'カスタム' },
-];
+import { useLanguage } from '../../i18n/LanguageContext';
 
 export default function AddMissionModal({ missions, editing, onClose }) {
+  const { t } = useLanguage();
   const [title, setTitle] = useState('');
   const [memo, setMemo] = useState('');
   const [missionInterval, setMissionInterval] = useState('daily');
@@ -165,8 +157,8 @@ export default function AddMissionModal({ missions, editing, onClose }) {
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-bold text-slate-800">
             {isEditingCategory
-              ? (editing.depth === DEPTH.CATEGORY ? 'カテゴリを編集' : 'サブカテゴリを編集')
-              : editing ? 'ミッションを編集' : 'ミッションを追加'}
+              ? (editing.depth === DEPTH.CATEGORY ? t.addMission.editCategory : t.addMission.editSubcategory)
+              : editing ? t.addMission.editMission : t.addMission.addMission}
           </h2>
           <button onClick={onClose} className="text-slate-400 text-xl w-10 h-10 flex items-center justify-center">&times;</button>
         </div>
@@ -177,7 +169,7 @@ export default function AddMissionModal({ missions, editing, onClose }) {
             <>
               <div>
                 <label className="text-sm font-medium text-slate-700 block mb-1">
-                  {editing.depth === DEPTH.CATEGORY ? 'カテゴリ名' : 'サブカテゴリ名'}
+                  {editing.depth === DEPTH.CATEGORY ? t.addMission.categoryName : t.addMission.subcategoryName}
                 </label>
                 <input
                   type="text"
@@ -193,13 +185,13 @@ export default function AddMissionModal({ missions, editing, onClose }) {
                   onClick={onClose}
                   className="flex-1 py-3 border border-slate-300 rounded-xl text-slate-600"
                 >
-                  キャンセル
+                  {t.common.cancel}
                 </button>
                 <button
                   type="submit"
                   className="flex-1 py-3 bg-indigo-600 text-white font-bold rounded-xl"
                 >
-                  更新
+                  {t.common.update}
                 </button>
               </div>
             </>
@@ -208,17 +200,17 @@ export default function AddMissionModal({ missions, editing, onClose }) {
           {/* Category */}
           {!editing && !isEditingCategory && (
             <div className="relative">
-              <label className="text-sm font-medium text-slate-700 block mb-1">カテゴリ (大項目)</label>
+              <label className="text-sm font-medium text-slate-700 block mb-1">{t.addMission.categoryLabel}</label>
               <input
                 type="text"
                 value={categoryName}
                 onChange={e => { setCategoryName(e.target.value); setShowCategoryDropdown(true); }}
                 onFocus={() => setShowCategoryDropdown(true)}
                 onBlur={() => setTimeout(() => setShowCategoryDropdown(false), 200)}
-                placeholder="例: 運動・健康"
+                placeholder={t.addMission.categoryPlaceholder}
                 className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm outline-none focus:border-indigo-400 bg-slate-50"
               />
-              {showCategoryDropdown && (allCategories.length > 0 || PRESET_CATEGORIES.length > 0) && (
+              {showCategoryDropdown && (allCategories.length > 0 || t.presetCategories.length > 0) && (
                 <div className="absolute top-full left-0 right-0 bg-white border border-slate-200 rounded-lg shadow-lg z-30 mt-1 max-h-48 overflow-y-auto">
                   {allCategories
                     .filter(c => !categoryName || c.title.includes(categoryName))
@@ -233,7 +225,7 @@ export default function AddMissionModal({ missions, editing, onClose }) {
                         {c.title}
                       </button>
                     ))}
-                  {PRESET_CATEGORIES
+                  {t.presetCategories
                     .filter(p => !allCategories.some(c => c.title === `${p.emoji} ${p.name}`))
                     .filter(p => !categoryName || `${p.emoji} ${p.name}`.includes(categoryName))
                     .map(p => (
@@ -255,14 +247,14 @@ export default function AddMissionModal({ missions, editing, onClose }) {
           {/* Subcategory */}
           {!editing && !isEditingCategory && categoryName.trim() && (
             <div className="relative">
-              <label className="text-sm font-medium text-slate-700 block mb-1">サブカテゴリ (中項目)</label>
+              <label className="text-sm font-medium text-slate-700 block mb-1">{t.addMission.subcategoryLabel}</label>
               <input
                 type="text"
                 value={subcategoryName}
                 onChange={e => { setSubcategoryName(e.target.value); setShowSubcategoryDropdown(true); }}
                 onFocus={() => setShowSubcategoryDropdown(true)}
                 onBlur={() => setTimeout(() => setShowSubcategoryDropdown(false), 200)}
-                placeholder="例: 新しい習慣"
+                placeholder={t.addMission.subcategoryPlaceholder}
                 className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm outline-none focus:border-indigo-400 bg-slate-50"
               />
               {showSubcategoryDropdown && existingSubcategories.length > 0 && (
@@ -288,13 +280,13 @@ export default function AddMissionModal({ missions, editing, onClose }) {
           {/* Task name */}
           {!isEditingCategory && (
           <div>
-            <label className="text-sm font-medium text-slate-700 block mb-1">タスク名 (ミッションの内容) *</label>
+            <label className="text-sm font-medium text-slate-700 block mb-1">{t.addMission.taskName}</label>
             <input
               type="text"
               value={title}
               onChange={e => setTitle(e.target.value)}
               required
-              placeholder="例: 腕立て10回"
+              placeholder={t.addMission.taskPlaceholder}
               className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm outline-none focus:border-indigo-400"
             />
           </div>
@@ -303,11 +295,11 @@ export default function AddMissionModal({ missions, editing, onClose }) {
           {/* Memo */}
           {!isEditingCategory && (
           <div>
-            <label className="text-sm font-medium text-slate-700 block mb-1">詳細メモ</label>
+            <label className="text-sm font-medium text-slate-700 block mb-1">{t.addMission.memoLabel}</label>
             <textarea
               value={memo}
               onChange={e => setMemo(e.target.value)}
-              placeholder="例: 毎朝起きたらすぐやる"
+              placeholder={t.addMission.memoPlaceholder}
               rows={2}
               className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm outline-none focus:border-indigo-400 resize-none"
             />
@@ -317,25 +309,25 @@ export default function AddMissionModal({ missions, editing, onClose }) {
           {/* Interval */}
           {!isEditingCategory && (
           <div>
-            <label className="text-sm font-medium text-slate-700 block mb-1">間隔 (周期)</label>
+            <label className="text-sm font-medium text-slate-700 block mb-1">{t.addMission.intervalLabel}</label>
             <select
               value={missionInterval}
               onChange={e => setMissionInterval(e.target.value)}
               className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm outline-none focus:border-indigo-400 bg-slate-50 appearance-none"
               style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%2394a3b8'%3E%3Cpath fill-rule='evenodd' d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z' clip-rule='evenodd'/%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 0.75rem center', backgroundSize: '1.25rem' }}
             >
-              <option value="daily">日次 (毎日)</option>
-              <option value="weekly">週次 (毎週)</option>
-              <option value="monthly">月次 (毎月)</option>
+              <option value="daily">{t.addMission.intervalDaily}</option>
+              <option value="weekly">{t.addMission.intervalWeekly}</option>
+              <option value="monthly">{t.addMission.intervalMonthly}</option>
             </select>
           </div>
           )}
 
           {!isEditingCategory && missionInterval === 'weekly' && (
             <div>
-              <label className="text-sm font-medium text-slate-700 block mb-1">基準曜日</label>
+              <label className="text-sm font-medium text-slate-700 block mb-1">{t.addMission.baseWeekday}</label>
               <div className="flex gap-1">
-                {WEEKDAYS.map((d, i) => (
+                {t.weekdays.map((d, i) => (
                   <button
                     key={i}
                     type="button"
@@ -356,7 +348,7 @@ export default function AddMissionModal({ missions, editing, onClose }) {
           {/* Points */}
           {!isEditingCategory && (
           <div>
-            <label className="text-sm font-medium text-slate-700 block mb-1">獲得ポイント</label>
+            <label className="text-sm font-medium text-slate-700 block mb-1">{t.addMission.earnPoints}</label>
             <div className="flex items-center gap-2">
               <span className="text-2xl">🪙</span>
               <input
@@ -378,13 +370,13 @@ export default function AddMissionModal({ missions, editing, onClose }) {
               onClick={onClose}
               className="flex-1 py-3 border border-slate-300 rounded-xl text-slate-600"
             >
-              キャンセル
+              {t.common.cancel}
             </button>
             <button
               type="submit"
               className="flex-1 py-3 bg-indigo-600 text-white font-bold rounded-xl"
             >
-              {editing ? '更新' : '追加'}
+              {editing ? t.common.update : t.common.add}
             </button>
           </div>
           )}

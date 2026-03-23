@@ -5,8 +5,10 @@ import MissionList from './MissionList';
 import AddMissionModal from './AddMissionModal';
 import PointsHeader from './PointsHeader';
 import { cancelScheduledNotification, scheduleNotification } from '../../utils/notification';
+import { useLanguage } from '../../i18n/LanguageContext';
 
 export default function MissionScreen({ onRewardUnlocked, onPointsChanged }) {
+  const { t } = useLanguage();
   const [showModal, setShowModal] = useState(false);
   const [editingMission, setEditingMission] = useState(null);
   const [popups, setPopups] = useState([]);
@@ -110,7 +112,7 @@ export default function MissionScreen({ onRewardUnlocked, onPointsChanged }) {
     await deleteRecursive(mission.id);
   }, []);
 
-  if (!missions) return <div className="p-4 text-center text-slate-500">読み込み中...</div>;
+  if (!missions) return <div className="p-4 text-center text-slate-500">{t.common.loading}</div>;
 
   return (
     <div className="relative">
