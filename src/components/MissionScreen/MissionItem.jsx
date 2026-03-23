@@ -102,38 +102,52 @@ export default function MissionItem({ mission, missions, onComplete, onUncomplet
     );
   }
 
-  // depth 1: sub-group header with left indigo border
+  // depth 1: sub-group header with left indigo accent (collapsible)
   if (!isLeaf) {
     return (
-      <div className="mx-4 mt-0.5 mb-0.5">
-        <div className="flex items-center justify-between pl-3 py-0 border-l-2 border-indigo-400">
-          <span className="font-medium text-slate-600 text-xs">{mission.title}</span>
-          <ContextMenu
-            onEdit={() => onEdit(mission)}
-            onDelete={handleDeleteWithConfirm}
-            size="small"
-          />
+      <div className="mt-0.5 mb-0.5">
+        <div
+          role="button"
+          tabIndex={0}
+          onClick={() => setExpanded(e => !e)}
+          onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setExpanded(v => !v); } }}
+          className="flex items-center justify-between px-4 py-1 cursor-pointer hover:bg-slate-50"
+        >
+          <div className="flex items-center gap-1.5">
+            <span className="w-0.5 h-4 bg-indigo-400 rounded-full flex-shrink-0" />
+            <span className="font-medium text-slate-600 text-xs">{mission.title}</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <ContextMenu
+              onEdit={() => onEdit(mission)}
+              onDelete={handleDeleteWithConfirm}
+              size="small"
+            />
+            <span className="text-slate-400 text-xs">{expanded ? '▼' : '▶'}</span>
+          </div>
         </div>
 
-        <div className="mt-1 space-y-2">
-          {children.map(child => (
-            <MissionItem
-              key={child.id}
-              mission={child}
-              missions={missions}
-              onComplete={onComplete}
-              onUncomplete={onUncomplete}
-              onDelete={onDelete}
-              onEdit={onEdit}
-            />
-          ))}
-        </div>
+        {expanded && (
+          <div className="slide-down mt-1 space-y-2">
+            {children.map(child => (
+              <MissionItem
+                key={child.id}
+                mission={child}
+                missions={missions}
+                onComplete={onComplete}
+                onUncomplete={onUncomplete}
+                onDelete={onDelete}
+                onEdit={onEdit}
+              />
+            ))}
+          </div>
+        )}
       </div>
     );
   }
 
   // leaf: task card
-  const indentClass = mission.depth === DEPTH.CATEGORY ? 'mx-3' : mission.depth === DEPTH.SUBCATEGORY ? 'mx-4' : 'mx-5';
+  const indentClass = 'mx-4';
 
   return (
     <div className={`${indentClass} mb-2 ${isCompleted ? 'bg-emerald-50/50' : 'bg-white'} rounded-xl shadow-md shadow-slate-200/50 p-3 flex items-center gap-3`}>

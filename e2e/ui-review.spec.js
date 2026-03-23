@@ -73,7 +73,8 @@ async function addMission(page, { task, category, subcategory, interval, weekday
 
   // Set weekday for weekly interval
   if (interval === 'weekly' && weekday != null) {
-    const weekdayButtons = page.locator('.flex.gap-1 button');
+    const modal = page.locator('.fixed.inset-0');
+    const weekdayButtons = modal.locator('.flex.gap-1 button');
     await weekdayButtons.nth(weekday).click();
   }
 
