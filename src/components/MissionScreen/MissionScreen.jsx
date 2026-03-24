@@ -7,7 +7,7 @@ import PointsHeader from './PointsHeader';
 import { cancelScheduledNotification, scheduleNotification } from '../../utils/notification';
 import { useLanguage } from '../../i18n/LanguageContext';
 
-export default function MissionScreen({ onRewardUnlocked, onPointsChanged }) {
+export default function MissionScreen({ onRewardUnlocked }) {
   const { t } = useLanguage();
   const [showModal, setShowModal] = useState(false);
   const [editingMission, setEditingMission] = useState(null);
@@ -53,7 +53,6 @@ export default function MissionScreen({ onRewardUnlocked, onPointsChanged }) {
 
     // Add points
     const newTotal = await addPoints(mission.points);
-    onPointsChanged?.();
 
     // Show point popup
     const popupId = Date.now();
@@ -76,14 +75,13 @@ export default function MissionScreen({ onRewardUnlocked, onPointsChanged }) {
       const { enabled } = await getNotificationSettings();
       if (enabled) cancelScheduledNotification();
     }
-  }, [onPointsChanged, onRewardUnlocked]);
+  }, [onRewardUnlocked]);
 
   const handleUncomplete = useCallback(async (mission) => {
     await db.missions.update(mission.id, { completedAt: null });
 
     // Subtract points
     await addPoints(-mission.points);
-    onPointsChanged?.();
 
     // Remove the most recent history entry for this mission
     const historyEntries = await db.history
@@ -98,7 +96,7 @@ export default function MissionScreen({ onRewardUnlocked, onPointsChanged }) {
     if (enabled && time) {
       scheduleNotification(() => db.missions.toArray(), time);
     }
-  }, [onPointsChanged]);
+  }, []);
 
   const handleDelete = useCallback(async (mission) => {
     // Delete all descendants (history entries are kept for calendar records)

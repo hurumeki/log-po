@@ -72,6 +72,7 @@ const en = {
     intervalMonthly: 'Monthly',
     baseWeekday: 'Start Day',
     earnPoints: 'Points Earned',
+    saveError: 'Failed to save. Please try again.',
   },
 
   // Preset categories

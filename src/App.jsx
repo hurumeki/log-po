@@ -11,7 +11,6 @@ import { scheduleNotification, isNotificationSupported } from './utils/notificat
 export default function App() {
   const [tab, setTab] = useState('mission');
   const [unlockedReward, setUnlockedReward] = useState(null);
-  const [pointsKey, setPointsKey] = useState(0);
 
   useEffect(() => {
     runResetCheck().then(async () => {
@@ -27,22 +26,16 @@ export default function App() {
     setUnlockedReward(reward);
   }
 
-  function handlePointsChanged() {
-    setPointsKey(k => k + 1);
-  }
-
   return (
     <div className="flex flex-col min-h-svh bg-[#FFFBF5] w-full">
       <main className="flex-1 overflow-y-auto pb-20">
         {tab === 'mission' && (
           <MissionScreen
-            key={pointsKey}
             onRewardUnlocked={handleRewardUnlocked}
-            onPointsChanged={handlePointsChanged}
           />
         )}
         {tab === 'calendar' && <CalendarScreen />}
-        {tab === 'rewards' && <RewardsScreen key={pointsKey} />}
+        {tab === 'rewards' && <RewardsScreen />}
         {tab === 'settings' && <SettingsScreen />}
       </main>
       <BottomNav current={tab} onChange={setTab} />
