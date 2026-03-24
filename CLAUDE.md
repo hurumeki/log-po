@@ -29,3 +29,4 @@
 - **Do not check versions or reinstall** (automatically handled by SessionStart hook)
 - Always use **`npx playwright test`** (global execution is prohibited)
 - Use **Chromium only**
+- **Always run `npm run build` before running tests** (`vite preview` serves from `dist/`, so tests will fail without a build)
