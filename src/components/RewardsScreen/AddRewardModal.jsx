@@ -21,25 +21,34 @@ export default function AddRewardModal({ editing, onClose }) {
   }, []);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   async function handleSubmit(e) {
     e.preventDefault();
     if (!title.trim()) return;
     if (isSubmitting) return;
     setIsSubmitting(true);
-    if (editing) {
-      await db.rewards.update(editing.id, {
-        title: title.trim(),
-        requiredPoints: Math.max(1, Number(requiredPoints) || 1),
-      });
-    } else {
-      await db.rewards.add({
-        title: title.trim(),
-        requiredPoints: Math.max(1, Number(requiredPoints) || 1),
-        unlockedAt: null,
-      });
+    setErrorMessage('');
+
+    try {
+      if (editing) {
+        await db.rewards.update(editing.id, {
+          title: title.trim(),
+          requiredPoints: Math.max(1, Number(requiredPoints) || 1),
+        });
+      } else {
+        await db.rewards.add({
+          title: title.trim(),
+          requiredPoints: Math.max(1, Number(requiredPoints) || 1),
+          unlockedAt: null,
+        });
+      }
+      onClose();
+    } catch {
+      setErrorMessage(t.addReward.saveError);
+    } finally {
+      setIsSubmitting(false);
     }
-    onClose();
   }
 
   return (
@@ -74,6 +83,9 @@ export default function AddRewardModal({ editing, onClose }) {
               className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:border-indigo-400"
             />
           </div>
+          {errorMessage && (
+            <div className="text-red-600 text-sm bg-red-50 rounded-lg px-3 py-2">{errorMessage}</div>
+          )}
           <div className="flex gap-2 pt-2">
             <button
               type="button"

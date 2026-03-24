@@ -128,6 +128,7 @@ const en = {
     contentLabel: 'Reward *',
     contentPlaceholder: 'e.g. Buy a cake',
     pointsLabel: 'Required Points',
+    saveError: 'Failed to save. Please try again.',
   },
 
   // Reward unlock modal
