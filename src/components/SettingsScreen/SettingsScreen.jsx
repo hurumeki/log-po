@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { version } from '../../../package.json';
 import { exportAllData, importAllData, clearHistory, getNotificationSettings, setNotificationEnabled, setNotificationTime } from '../../db/db';
 import { isNotificationSupported, requestPermission, getPermissionStatus, scheduleNotification, cancelScheduledNotification } from '../../utils/notification';
 import { db } from '../../db/db';
@@ -207,6 +208,10 @@ export default function SettingsScreen() {
             </button>
           </div>
         </section>
+        {/* Version */}
+        <p className="text-center text-xs text-slate-400 py-2">
+          {t.settings.versionLabel} v{version}
+        </p>
       </div>
 
       {/* Clear confirm dialog */}

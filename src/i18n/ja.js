@@ -162,6 +162,7 @@ const ja = {
     historyCleared: '履歴を消去しました',
     languageSection: '言語設定',
     languageLabel: '表示言語',
+    versionLabel: 'バージョン',
   },
 
   // Error boundary
