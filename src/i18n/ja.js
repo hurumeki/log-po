@@ -72,6 +72,7 @@ const ja = {
     intervalMonthly: '月次 (毎月)',
     baseWeekday: '基準曜日',
     earnPoints: '獲得ポイント',
+    saveError: '保存に失敗しました。もう一度お試しください。',
   },
 
   // Preset categories
@@ -127,6 +128,7 @@ const ja = {
     contentLabel: '報酬内容 *',
     contentPlaceholder: '例：ケーキを買う',
     pointsLabel: '必要ポイント',
+    saveError: '保存に失敗しました。もう一度お試しください。',
   },
 
   // Reward unlock modal

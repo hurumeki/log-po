@@ -68,90 +68,100 @@ export default function AddMissionModal({ missions, editing, onClose }) {
   }, [editing, missions]);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   async function handleSubmit(e) {
     e.preventDefault();
     if (!title.trim()) return;
     if (isSubmitting) return;
     setIsSubmitting(true);
+    setErrorMessage('');
 
-    if (editing) {
-      if (isEditingCategory) {
-        await db.missions.update(editing.id, { title: title.trim() });
-      } else {
-        await db.missions.update(editing.id, {
+    try {
+      if (editing) {
+        if (isEditingCategory) {
+          await db.missions.update(editing.id, { title: title.trim() });
+        } else {
+          await db.missions.update(editing.id, {
+            title: title.trim(),
+            memo: memo.trim(),
+            interval: missionInterval,
+            weekday: missionInterval === 'weekly' ? weekday : null,
+            points: Number(points),
+          });
+        }
+        onClose();
+        return;
+      }
+
+      await db.transaction('rw', db.missions, async () => {
+        // Find or create category (depth 0)
+        let parentId = null;
+        if (categoryName.trim()) {
+          let category = allCategories.find(c => c.title === categoryName.trim());
+          if (!category) {
+            const catId = await db.missions.add({
+              title: categoryName.trim(),
+              memo: '',
+              interval: 'daily',
+              weekday: null,
+              points: 0,
+              parentId: null,
+              depth: DEPTH.CATEGORY,
+              completedAt: null,
+              createdAt: new Date().toISOString(),
+              sortOrder: await getNextSortOrder(null),
+            });
+            category = { id: catId, depth: DEPTH.CATEGORY };
+          }
+          parentId = category.id;
+
+          // Find or create subcategory (depth 1)
+          if (subcategoryName.trim()) {
+            const subs = missions.filter(m => m.parentId === category.id && m.depth === DEPTH.SUBCATEGORY);
+            let subcategory = subs.find(s => s.title === subcategoryName.trim());
+            if (!subcategory) {
+              const subId = await db.missions.add({
+                title: subcategoryName.trim(),
+                memo: '',
+                interval: 'daily',
+                weekday: null,
+                points: 0,
+                parentId: category.id,
+                depth: DEPTH.SUBCATEGORY,
+                completedAt: null,
+                createdAt: new Date().toISOString(),
+                sortOrder: await getNextSortOrder(category.id),
+              });
+              subcategory = { id: subId, depth: DEPTH.SUBCATEGORY };
+            }
+            parentId = subcategory.id;
+          }
+        }
+
+        const depth = parentId
+          ? (subcategoryName.trim() ? DEPTH.TASK : DEPTH.SUBCATEGORY)
+          : DEPTH.CATEGORY;
+
+        await db.missions.add({
           title: title.trim(),
           memo: memo.trim(),
           interval: missionInterval,
           weekday: missionInterval === 'weekly' ? weekday : null,
           points: Number(points),
-        });
-      }
-      onClose();
-      return;
-    }
-
-    // Find or create category (depth 0)
-    let parentId = null;
-    if (categoryName.trim()) {
-      let category = allCategories.find(c => c.title === categoryName.trim());
-      if (!category) {
-        const catId = await db.missions.add({
-          title: categoryName.trim(),
-          memo: '',
-          interval: 'daily',
-          weekday: null,
-          points: 0,
-          parentId: null,
-          depth: DEPTH.CATEGORY,
+          parentId,
+          depth,
           completedAt: null,
           createdAt: new Date().toISOString(),
-          sortOrder: await getNextSortOrder(null),
+          sortOrder: await getNextSortOrder(parentId),
         });
-        category = { id: catId, depth: DEPTH.CATEGORY };
-      }
-      parentId = category.id;
-
-      // Find or create subcategory (depth 1)
-      if (subcategoryName.trim()) {
-        const subs = missions.filter(m => m.parentId === category.id && m.depth === DEPTH.SUBCATEGORY);
-        let subcategory = subs.find(s => s.title === subcategoryName.trim());
-        if (!subcategory) {
-          const subId = await db.missions.add({
-            title: subcategoryName.trim(),
-            memo: '',
-            interval: 'daily',
-            weekday: null,
-            points: 0,
-            parentId: category.id,
-            depth: DEPTH.SUBCATEGORY,
-            completedAt: null,
-            createdAt: new Date().toISOString(),
-            sortOrder: await getNextSortOrder(category.id),
-          });
-          subcategory = { id: subId, depth: DEPTH.SUBCATEGORY };
-        }
-        parentId = subcategory.id;
-      }
+      });
+      onClose();
+    } catch {
+      setErrorMessage(t.addMission.saveError);
+    } finally {
+      setIsSubmitting(false);
     }
-
-    const depth = parentId
-      ? (subcategoryName.trim() ? DEPTH.TASK : DEPTH.SUBCATEGORY)
-      : DEPTH.CATEGORY;
-
-    await db.missions.add({
-      title: title.trim(),
-      memo: memo.trim(),
-      interval: missionInterval,
-      weekday: missionInterval === 'weekly' ? weekday : null,
-      points: Number(points),
-      parentId,
-      depth,
-      completedAt: null,
-      createdAt: new Date().toISOString(),
-      sortOrder: await getNextSortOrder(parentId),
-    });
-    onClose();
   }
 
   return (
@@ -369,6 +379,10 @@ export default function AddMissionModal({ missions, editing, onClose }) {
               <span className="text-sm text-slate-500 font-medium">pt</span>
             </div>
           </div>
+          )}
+
+          {errorMessage && (
+            <div className="text-red-600 text-sm bg-red-50 rounded-lg px-3 py-2">{errorMessage}</div>
           )}
 
           {!isEditingCategory && (

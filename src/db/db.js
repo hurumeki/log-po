@@ -69,33 +69,39 @@ export async function runResetCheck() {
     return;
   }
 
-  await db.transaction('rw', db.missions, db.userData, async () => {
-    const missions = await db.missions.toArray();
+  // Read phase: outside transaction so useLiveQuery reads are not blocked
+  const missions = await db.missions.toArray();
+  const idsToReset = [];
 
-    for (const m of missions) {
-      if (!m.completedAt) continue;
-      const completed = new Date(m.completedAt);
+  for (const m of missions) {
+    if (!m.completedAt) continue;
+    const completed = new Date(m.completedAt);
 
-      let shouldReset = false;
-      if (m.interval === 'daily') {
-        const today = new Date(now); today.setHours(0,0,0,0);
-        const completedDay = new Date(completed); completedDay.setHours(0,0,0,0);
-        shouldReset = today > completedDay;
-      } else if (m.interval === 'weekly') {
-        const currentWeekStart = getWeekStart(now, m.weekday ?? 1);
-        const completedWeekStart = getWeekStart(completed, m.weekday ?? 1);
-        shouldReset = currentWeekStart > completedWeekStart;
-      } else if (m.interval === 'monthly') {
-        const currentMonth = getMonthStart(now);
-        const completedMonth = getMonthStart(completed);
-        shouldReset = currentMonth > completedMonth;
-      }
-
-      if (shouldReset) {
-        await db.missions.update(m.id, { completedAt: null });
-      }
+    let shouldReset = false;
+    if (m.interval === 'daily') {
+      const today = new Date(now); today.setHours(0,0,0,0);
+      const completedDay = new Date(completed); completedDay.setHours(0,0,0,0);
+      shouldReset = today > completedDay;
+    } else if (m.interval === 'weekly') {
+      const currentWeekStart = getWeekStart(now, m.weekday ?? 1);
+      const completedWeekStart = getWeekStart(completed, m.weekday ?? 1);
+      shouldReset = currentWeekStart > completedWeekStart;
+    } else if (m.interval === 'monthly') {
+      const currentMonth = getMonthStart(now);
+      const completedMonth = getMonthStart(completed);
+      shouldReset = currentMonth > completedMonth;
     }
 
+    if (shouldReset) {
+      idsToReset.push(m.id);
+    }
+  }
+
+  // Write phase: short transaction, only for actual updates
+  await db.transaction('rw', db.missions, db.userData, async () => {
+    for (const id of idsToReset) {
+      await db.missions.update(id, { completedAt: null });
+    }
     await setUserData('lastResetCheck', now.toISOString());
   });
 }

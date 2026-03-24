@@ -72,6 +72,7 @@ const en = {
     intervalMonthly: 'Monthly',
     baseWeekday: 'Start Day',
     earnPoints: 'Points Earned',
+    saveError: 'Failed to save. Please try again.',
   },
 
   // Preset categories
@@ -127,6 +128,7 @@ const en = {
     contentLabel: 'Reward *',
     contentPlaceholder: 'e.g. Buy a cake',
     pointsLabel: 'Required Points',
+    saveError: 'Failed to save. Please try again.',
   },
 
   // Reward unlock modal
