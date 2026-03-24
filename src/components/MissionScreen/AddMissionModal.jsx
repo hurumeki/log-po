@@ -67,9 +67,13 @@ export default function AddMissionModal({ missions, editing, onClose }) {
     }
   }, [editing, missions]);
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   async function handleSubmit(e) {
     e.preventDefault();
     if (!title.trim()) return;
+    if (isSubmitting) return;
+    setIsSubmitting(true);
 
     if (editing) {
       if (isEditingCategory) {
@@ -192,7 +196,8 @@ export default function AddMissionModal({ missions, editing, onClose }) {
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 py-3 bg-indigo-600 text-white font-bold rounded-xl"
+                  disabled={isSubmitting}
+                  className={`flex-1 py-3 bg-indigo-600 text-white font-bold rounded-xl${isSubmitting ? ' opacity-50' : ''}`}
                 >
                   {t.common.update}
                 </button>
@@ -377,7 +382,8 @@ export default function AddMissionModal({ missions, editing, onClose }) {
             </button>
             <button
               type="submit"
-              className="flex-1 py-3 bg-indigo-600 text-white font-bold rounded-xl"
+              disabled={isSubmitting}
+              className={`flex-1 py-3 bg-indigo-600 text-white font-bold rounded-xl${isSubmitting ? ' opacity-50' : ''}`}
             >
               {editing ? t.common.update : t.common.add}
             </button>

@@ -20,9 +20,13 @@ export default function AddRewardModal({ editing, onClose }) {
     return () => { document.body.style.overflow = ''; };
   }, []);
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   async function handleSubmit(e) {
     e.preventDefault();
     if (!title.trim()) return;
+    if (isSubmitting) return;
+    setIsSubmitting(true);
     if (editing) {
       await db.rewards.update(editing.id, {
         title: title.trim(),
@@ -80,7 +84,8 @@ export default function AddRewardModal({ editing, onClose }) {
             </button>
             <button
               type="submit"
-              className="flex-1 py-3 bg-indigo-600 text-white font-bold rounded-xl"
+              disabled={isSubmitting}
+              className={`flex-1 py-3 bg-indigo-600 text-white font-bold rounded-xl${isSubmitting ? ' opacity-50' : ''}`}
             >
               {editing ? t.common.update : t.common.add}
             </button>
