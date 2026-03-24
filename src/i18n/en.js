@@ -162,6 +162,7 @@ const en = {
     historyCleared: 'History cleared',
     languageSection: 'Language',
     languageLabel: 'Display Language',
+    versionLabel: 'Version',
   },
 
   // Error boundary
